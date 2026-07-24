@@ -37,7 +37,7 @@
   .brand{margin-right:auto; min-width:0}
   .wordmark{font-family:var(--serif); font-size:29px; line-height:1; letter-spacing:.01em; font-weight:600}
   .wordmark .br{color:var(--brass)}
-  .tagline{margin:6px 0 0; color:var(--ink-soft); font-size:13.5px; line-height:1.4}
+  .tagline{margin:6px 0 0; color:var(--ink-soft); font-size:13px; line-height:1.4}
   .pro{font-family:var(--sans); font-size:13px; font-weight:700; color:var(--brass);
     background:transparent; border:1px solid var(--brass); border-radius:100px; padding:8px 15px;
     cursor:pointer; white-space:nowrap; letter-spacing:.01em; transition:background .16s ease,color .16s ease}
@@ -45,22 +45,23 @@
   .pro .price{font-family:var(--mono); font-weight:600}
 
   .panel{background:var(--surface); border:1px solid var(--edge); border-radius:var(--r); padding:18px; margin-top:16px}
-  .eyebrow{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 12px}
+  .eyebrow{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft); margin:0 0 12px}
 
   .field{margin-bottom:18px}
   .field:last-child{margin-bottom:0}
   .field > .lab{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px}
   .field .lab .name{font-size:13px; font-weight:600; color:var(--ink)}
-  .field .lab .val{font-family:var(--mono); font-size:14px; color:var(--brass); font-variant-numeric:tabular-nums}
+  .field .lab .val{font-family:var(--mono); font-size:15px; color:var(--brass); font-variant-numeric:tabular-nums}
 
   /* segmented / chip groups */
   .seg{display:flex; flex-wrap:wrap; gap:7px}
-  .seg button{font-family:var(--sans); font-size:13.5px; font-weight:600; color:var(--ink-soft);
+  .seg.keys{display:grid; grid-template-columns:repeat(6,1fr)}
+  .seg button{font-family:var(--sans); font-size:13px; font-weight:600; color:var(--ink-soft);
     background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
     padding:9px 13px; cursor:pointer; transition:border-color .14s ease,color .14s ease,background .14s ease}
   .seg button:hover{border-color:var(--edge-strong); color:var(--ink)}
   .seg button[aria-pressed="true"]{background:var(--brass); border-color:var(--brass); color:var(--brass-ink)}
-  .keys button{flex:1 1 auto; min-width:46px; text-align:center; font-family:var(--mono); font-size:13px}
+  .keys button{text-align:center; font-family:var(--mono); font-size:13px}
   .moods button{flex:0 0 auto}
 
   /* tempo slider */
@@ -72,11 +73,11 @@
     cursor:pointer; border:3px solid var(--surface); box-shadow:0 0 0 1px var(--edge-strong)}
   input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
   input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
-  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-top:2px}
+  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--ink-soft); margin-top:2px}
 
   /* generate row */
   .genrow{display:flex; gap:10px; margin-top:4px}
-  .btn{font-family:var(--sans); font-weight:700; font-size:14.5px; border-radius:var(--r-sm);
+  .btn{font-family:var(--sans); font-weight:700; font-size:15px; border-radius:var(--r-sm);
     padding:12px 16px; cursor:pointer; border:1px solid transparent; transition:background .15s ease,border-color .15s ease,opacity .15s ease; display:inline-flex; align-items:center; justify-content:center; gap:8px}
   .btn:disabled{opacity:.45; cursor:not-allowed}
   .btn-primary{flex:1; color:var(--brass-ink); background:var(--brass); border-color:var(--brass)}
@@ -88,13 +89,14 @@
 
   /* output */
   .out-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap}
-  .out-head h2{margin:0; font-family:var(--serif); font-size:19px; font-weight:600}
-  .out-sub{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft)}
+  .out-head h2{margin:0; font-family:var(--serif); font-size:22px; font-weight:600}
+  .out-sub{font-family:var(--mono); font-size:13px; color:var(--ink-soft)}
   .chords{display:grid; grid-template-columns:repeat(auto-fit,minmax(70px,1fr)); gap:9px}
   .chip{background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
-    padding:14px 8px 11px; text-align:center; transition:border-color .12s ease, box-shadow .18s ease, background .18s ease}
-  .chip .sym{font-family:var(--mono); font-size:19px; font-weight:600; color:var(--ink); line-height:1.1; word-break:break-word}
-  .chip .rn{font-size:12px; color:var(--ink-faint); margin-top:5px; font-family:var(--serif); font-style:italic}
+    padding:14px 8px 11px; text-align:center; transition:border-color .12s ease, box-shadow .18s ease, background .18s ease;
+    animation:chipIn .34s cubic-bezier(.22,1,.36,1) both}
+  .chip .sym{font-family:var(--mono); font-size:17px; font-weight:600; color:var(--ink); line-height:1.1; word-break:break-word}
+  .chip .rn{font-size:11px; color:var(--ink-soft); margin-top:5px; font-family:var(--serif); font-style:italic}
   .chip.active{border-color:var(--brass); background:#2a251b; box-shadow:0 0 0 3px var(--brass-glow)}
   .chip.active .sym{color:var(--brass)}
   .chip.active .rn{color:var(--brass)}
@@ -105,20 +107,56 @@
   .nowplaying b{color:var(--ink); font-family:var(--mono)}
 
   .banner{background:#2a1c17; border:1px solid var(--clay); color:#eecfc4; border-radius:var(--r-sm);
-    padding:12px 14px; font-size:13.5px; margin-top:16px}
+    padding:12px 14px; font-size:13px; margin-top:16px}
   .banner.hide{display:none}
 
   footer{margin-top:26px; padding-top:16px; border-top:1px solid var(--edge);
-    font-size:12.5px; color:var(--ink-faint); text-align:center; line-height:1.6}
-  footer b{color:var(--ink-soft); font-weight:600}
-  .legal{margin-top:4px; font-size:11.5px; color:var(--ink-faint)}
+    font-size:13px; color:var(--ink-soft); text-align:center; line-height:1.6}
+  footer b{color:var(--ink); font-weight:600}
+  .legal{margin-top:4px; font-size:11px; color:var(--ink-soft)}
 
   :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
-  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
+
+  /* output stage — the payoff, weightier than the controls */
+  #outPanel{padding:24px 20px; margin-top:24px;
+    background:linear-gradient(180deg,color-mix(in srgb,var(--brass) 5%,var(--surface)),var(--surface));
+    box-shadow:inset 0 2px 0 var(--brass)}
+
+  @keyframes chipIn{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+  /* length lock badge */
+  .lock{display:inline-block; margin-left:7px; font-family:var(--sans); font-size:10px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; color:var(--brass);
+    border:1px solid var(--brass); border-radius:100px; padding:1px 6px; vertical-align:1px}
+  .seg button[aria-pressed="true"] .lock{color:var(--brass-ink); border-color:var(--brass-ink)}
+
+  /* unlock dialog */
+  dialog#proDialog{border:none; padding:0; background:transparent; color:var(--ink);
+    max-width:400px; width:calc(100% - 32px)}
+  dialog#proDialog::backdrop{background:rgba(6,5,4,.66); backdrop-filter:blur(2px)}
+  .pro-card{position:relative; background:var(--elevated); border:1px solid var(--edge-strong);
+    border-radius:var(--r); padding:26px 24px 22px;
+    box-shadow:inset 0 2px 0 var(--brass), 0 24px 64px rgba(0,0,0,.55)}
+  .pro-x{position:absolute; top:12px; right:12px; width:30px; height:30px; border-radius:8px;
+    background:transparent; border:1px solid var(--edge); color:var(--ink-soft); font-size:19px;
+    line-height:1; cursor:pointer; transition:color .14s ease,border-color .14s ease}
+  .pro-x:hover{color:var(--ink); border-color:var(--edge-strong)}
+  .pro-eyebrow{font-family:var(--mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--brass); margin:0 0 10px}
+  .pro-h{font-family:var(--serif); font-size:22px; font-weight:600; line-height:1.2; margin:0 0 6px;
+    text-wrap:balance}
+  .pro-lede{margin:0 0 16px; color:var(--ink-soft); font-size:15px; line-height:1.5}
+  .pro-list{list-style:none; margin:0 0 20px; padding:0; display:flex; flex-direction:column; gap:10px}
+  .pro-list li{position:relative; padding-left:24px; font-size:15px; line-height:1.4; color:var(--ink)}
+  .pro-list li::before{content:"✓"; position:absolute; left:0; top:0; color:var(--brass); font-weight:700}
+  .pro-cta{width:100%; font-size:15px}
+  .pro-fine{margin:12px 0 0; text-align:center; font-family:var(--mono); font-size:11px; color:var(--ink-soft)}
+
   @media(max-width:400px){
-    .wordmark{font-size:25px}
-    .pro{padding:7px 12px; font-size:12px}
-    .chip .sym{font-size:17px}
+    .wordmark{font-size:22px}
+    .pro{padding:7px 12px; font-size:13px}
+    .chip .sym{font-size:15px}
   }
 </style>
 </head>
@@ -129,8 +167,7 @@
       <div class="wordmark">Chord<span class="br">F</span>orge</div>
       <p class="tagline">In-key chord progressions, a guide melody, and a <b>.mid</b> for your DAW.</p>
     </div>
-    <!-- TODO: Stripe checkout for $29 one-time unlock -->
-    <button class="pro" id="proBtn" type="button" title="Coming soon">Unlock Pro <span class="price">$29</span></button>
+    <button class="pro" id="proBtn" type="button" title="See what ChordForge Pro unlocks">Unlock Pro <span class="price">$29</span></button>
   </header>
 
   <div class="banner hide" id="banner"></div>
@@ -180,8 +217,8 @@
     <div class="chords" id="chords"></div>
 
     <div class="transport">
-      <button class="btn btn-primary" id="playBtn" type="button" disabled>▶ Play</button>
-      <button class="btn btn-secondary" id="exportBtn" type="button" disabled>↓ Export .mid</button>
+      <button class="btn btn-primary" id="playBtn" type="button" disabled><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span></button>
+      <button class="btn btn-secondary" id="exportBtn" type="button" disabled><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v10m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Export .mid</span></button>
     </div>
     <div class="nowplaying" id="nowplaying"></div>
   </section>
@@ -191,6 +228,26 @@
     <div class="legal">A Money Talks venture.</div>
   </footer>
 </div>
+
+<!-- unlock moment -->
+<dialog id="proDialog" aria-labelledby="proHead">
+  <div class="pro-card">
+    <button class="pro-x" id="proClose" type="button" aria-label="Close">×</button>
+    <p class="pro-eyebrow">ChordForge Pro</p>
+    <h2 class="pro-h" id="proHead">$29 one-time — yours forever</h2>
+    <p class="pro-lede">Unlock the full forge. One payment, no subscription, no account.</p>
+    <ul class="pro-list">
+      <li>Progressions up to 8 bars — the free forge stops at 4</li>
+      <li>WAV &amp; stem export, not just MIDI</li>
+      <li>No watermark on your exported tracks</li>
+      <li>A license to use it in music you release</li>
+      <li>Every future ChordForge update, included</li>
+    </ul>
+    <!-- STRIPE: set href to the $29 Payment Link after restart -->
+    <button class="btn btn-primary pro-cta" id="proBuyBtn" type="button" disabled>Coming soon</button>
+    <p class="pro-fine">One-time $29 · instant unlock · runs in your browser</p>
+  </div>
+</dialog>
 
 <!-- UMD globals: Tone.js and midi-writer-js. Classic scripts run before the module below. -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
@@ -202,6 +259,24 @@
   const $ = (id) => document.getElementById(id);
   const banner = $('banner');
   const showBanner = (msg) => { banner.textContent = msg; banner.classList.remove('hide'); };
+
+  /* ---------- Pro unlock ---------- */
+  const ICON = {
+    play: '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span>',
+    stop: '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg><span>Stop</span>',
+  };
+  const params = new URLSearchParams(location.search);
+  let isPro = false;
+  try { isPro = localStorage.getItem('chordforge_pro') === '1'; } catch (e) {}
+  if (params.get('pro') === '1'){ isPro = true; try { localStorage.setItem('chordforge_pro', '1'); } catch (e) {} }
+
+  const proDialog = $('proDialog');
+  const openPro  = () => { proDialog.showModal ? proDialog.showModal() : proDialog.setAttribute('open',''); };
+  const closePro = () => { proDialog.close ? proDialog.close() : proDialog.removeAttribute('open'); };
+  $('proBtn').addEventListener('click', openPro);
+  $('proClose').addEventListener('click', closePro);
+  proDialog.addEventListener('click', (e) => { if (e.target === proDialog) closePro(); });
+  if (isPro){ $('proBtn').textContent = 'Pro · unlocked'; }
 
   let Tonal;
   try {
@@ -358,8 +433,9 @@
     const scaleNotes = getScaleNotes(state.root, state.mode);
     const pool = MOODS[state.mood];
 
+    const len = (state.length === 8 && isPro) ? 8 : 4;   // 8-bar output is Pro-gated
     let tokens;
-    if (state.length === 4){
+    if (len === 4){
       tokens = pool[Math.floor(rand() * pool.length)];
     } else {
       const a = Math.floor(rand() * pool.length);
@@ -396,10 +472,13 @@
     $('outSub').textContent = `${keyLabel} ${state.mode} · ${state.mood} · ${state.bpm} BPM`;
     const wrap = $('chords');
     wrap.innerHTML = '';
+    const n = state.chords.length;
+    wrap.style.gridTemplateColumns = `repeat(${n <= 4 ? Math.max(n, 1) : 4},1fr)`;
     state.chords.forEach((ch, i) => {
       const el = document.createElement('div');
       el.className = 'chip';
       el.dataset.i = i;
+      el.style.animationDelay = (i * 40) + 'ms';
       el.innerHTML = `<div class="sym">${ch.symbol}</div><div class="rn">${ch.roman}</div>`;
       wrap.appendChild(el);
     });
@@ -459,7 +538,7 @@
 
     Tone.Transport.start();
     playing = true;
-    $('playBtn').innerHTML = '■ Stop';
+    $('playBtn').innerHTML = ICON.stop;
   }
 
   function stop(){
@@ -469,7 +548,7 @@
     }
     if (part){ part.dispose(); part = null; }
     playing = false;
-    $('playBtn').innerHTML = '▶ Play';
+    $('playBtn').innerHTML = ICON.play;
     highlight(-1);
     $('nowplaying').textContent = '';
   }
@@ -516,8 +595,12 @@
 
   const lenSeg = $('lenSeg');
   [[4,'4 chords'], [8,'8 chords']].forEach(([val, label]) => {
-    const b = segButton(label, val === state.length);
-    b.addEventListener('click', () => { state.length = val; setPressed(lenSeg, b); generate(false); });
+    const locked = val === 8 && !isPro;
+    const b = segButton(locked ? `${label}<span class="lock">Pro</span>` : label, val === state.length);
+    b.addEventListener('click', () => {
+      if (val === 8 && !isPro){ openPro(); return; }   // free tier stops at 4 bars
+      state.length = val; setPressed(lenSeg, b); generate(false);
+    });
     lenSeg.appendChild(b);
   });
 
@@ -539,12 +622,6 @@
   $('regenBtn').addEventListener('click', () => generate(true));
   $('playBtn').addEventListener('click', () => { playing ? stop() : play(); });
   $('exportBtn').addEventListener('click', exportMidi);
-  $('proBtn').addEventListener('click', () => {
-    const el = $('proBtn');
-    const orig = el.innerHTML;
-    el.innerHTML = 'Coming soon ✦';
-    setTimeout(() => { el.innerHTML = orig; }, 1400);
-  });
 
   // engine ready
   $('genBtn').disabled = false;
