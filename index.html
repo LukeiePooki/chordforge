@@ -1,0 +1,557 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ChordForge — Free Chord Progression Generator with MIDI Export</title>
+<meta name="description" content="Free chord progression generator with one-click MIDI export. Pick a key and a mood, get an in-key progression plus a guide melody, and drop the .mid straight into your DAW. No signup.">
+<link rel="canonical" href="https://lukeiepooki.github.io/chordforge/">
+<meta property="og:title" content="ChordForge — Free Chord Progression Generator with MIDI Export">
+<meta property="og:description" content="Pick a key and a vibe, get an in-key chord progression and guide melody, then export the MIDI into your DAW. Free, no signup.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://lukeiepooki.github.io/chordforge/">
+<meta name="twitter:card" content="summary">
+<style>
+  :root{
+    --ground:#0F0E0C; --surface:#171512; --elevated:#211E18;
+    --edge:rgba(236,231,219,.09); --edge-strong:rgba(236,231,219,.18);
+    --ink:#ECE7DB; --ink-soft:#A39C8C; --ink-faint:#736C5D;
+    --brass:#C6A15B; --brass-ink:#231C0C; --brass-glow:rgba(198,161,91,.14);
+    --sage:#8BA87A; --clay:#C46A4E;
+    --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+    --sans:ui-sans-serif,-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+    --mono:ui-monospace,"SF Mono","Cascadia Code","Roboto Mono",Menlo,monospace;
+    --r:14px; --r-sm:9px;
+  }
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{margin:0;
+    background:radial-gradient(120% 80% at 85% -10%,var(--brass-glow),transparent 55%),var(--ground);
+    color:var(--ink); font-family:var(--sans); font-size:17px; line-height:1.55;
+    -webkit-font-smoothing:antialiased; min-height:100vh}
+  .wrap{max-width:680px; margin:0 auto; padding:22px 16px 40px}
+  .num{font-family:var(--mono); font-variant-numeric:tabular-nums}
+
+  /* header */
+  header.top{display:flex; align-items:center; gap:14px; padding-bottom:18px; border-bottom:1px solid var(--edge)}
+  .brand{margin-right:auto; min-width:0}
+  .wordmark{font-family:var(--serif); font-size:29px; line-height:1; letter-spacing:.01em; font-weight:600}
+  .wordmark .br{color:var(--brass)}
+  .tagline{margin:6px 0 0; color:var(--ink-soft); font-size:13.5px; line-height:1.4}
+  .pro{font-family:var(--sans); font-size:13px; font-weight:700; color:var(--brass);
+    background:transparent; border:1px solid var(--brass); border-radius:100px; padding:8px 15px;
+    cursor:pointer; white-space:nowrap; letter-spacing:.01em; transition:background .16s ease,color .16s ease}
+  .pro:hover{background:var(--brass); color:var(--brass-ink)}
+  .pro .price{font-family:var(--mono); font-weight:600}
+
+  .panel{background:var(--surface); border:1px solid var(--edge); border-radius:var(--r); padding:18px; margin-top:16px}
+  .eyebrow{font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 12px}
+
+  .field{margin-bottom:18px}
+  .field:last-child{margin-bottom:0}
+  .field > .lab{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:9px}
+  .field .lab .name{font-size:13px; font-weight:600; color:var(--ink)}
+  .field .lab .val{font-family:var(--mono); font-size:14px; color:var(--brass); font-variant-numeric:tabular-nums}
+
+  /* segmented / chip groups */
+  .seg{display:flex; flex-wrap:wrap; gap:7px}
+  .seg button{font-family:var(--sans); font-size:13.5px; font-weight:600; color:var(--ink-soft);
+    background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
+    padding:9px 13px; cursor:pointer; transition:border-color .14s ease,color .14s ease,background .14s ease}
+  .seg button:hover{border-color:var(--edge-strong); color:var(--ink)}
+  .seg button[aria-pressed="true"]{background:var(--brass); border-color:var(--brass); color:var(--brass-ink)}
+  .keys button{flex:1 1 auto; min-width:46px; text-align:center; font-family:var(--mono); font-size:13px}
+  .moods button{flex:0 0 auto}
+
+  /* tempo slider */
+  input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:5px; border-radius:5px;
+    background:linear-gradient(90deg,var(--brass) var(--fill,50%),var(--elevated) var(--fill,50%)); outline:none; margin:6px 0}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:20px; height:20px; border-radius:50%;
+    background:var(--brass); cursor:pointer; border:3px solid var(--surface); box-shadow:0 0 0 1px var(--edge-strong)}
+  input[type=range]::-moz-range-thumb{width:20px; height:20px; border-radius:50%; background:var(--brass);
+    cursor:pointer; border:3px solid var(--surface); box-shadow:0 0 0 1px var(--edge-strong)}
+  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
+  input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
+  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--ink-faint); margin-top:2px}
+
+  /* generate row */
+  .genrow{display:flex; gap:10px; margin-top:4px}
+  .btn{font-family:var(--sans); font-weight:700; font-size:14.5px; border-radius:var(--r-sm);
+    padding:12px 16px; cursor:pointer; border:1px solid transparent; transition:background .15s ease,border-color .15s ease,opacity .15s ease; display:inline-flex; align-items:center; justify-content:center; gap:8px}
+  .btn:disabled{opacity:.45; cursor:not-allowed}
+  .btn-primary{flex:1; color:var(--brass-ink); background:var(--brass); border-color:var(--brass)}
+  .btn-primary:hover:not(:disabled){background:#d3b26f}
+  .btn-secondary{color:var(--ink); background:var(--elevated); border-color:var(--edge-strong)}
+  .btn-secondary:hover:not(:disabled){border-color:var(--brass); color:var(--brass)}
+  .btn-ghost{color:var(--ink-soft); background:transparent; border-color:var(--edge-strong)}
+  .btn-ghost:hover:not(:disabled){color:var(--ink); border-color:var(--ink-faint)}
+
+  /* output */
+  .out-head{display:flex; justify-content:space-between; align-items:baseline; gap:10px; margin-bottom:14px; flex-wrap:wrap}
+  .out-head h2{margin:0; font-family:var(--serif); font-size:19px; font-weight:600}
+  .out-sub{font-family:var(--mono); font-size:12.5px; color:var(--ink-soft)}
+  .chords{display:grid; grid-template-columns:repeat(auto-fit,minmax(70px,1fr)); gap:9px}
+  .chip{background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
+    padding:14px 8px 11px; text-align:center; transition:border-color .12s ease, box-shadow .18s ease, background .18s ease}
+  .chip .sym{font-family:var(--mono); font-size:19px; font-weight:600; color:var(--ink); line-height:1.1; word-break:break-word}
+  .chip .rn{font-size:12px; color:var(--ink-faint); margin-top:5px; font-family:var(--serif); font-style:italic}
+  .chip.active{border-color:var(--brass); background:#2a251b; box-shadow:0 0 0 3px var(--brass-glow)}
+  .chip.active .sym{color:var(--brass)}
+  .chip.active .rn{color:var(--brass)}
+
+  .transport{display:flex; gap:10px; margin-top:16px; flex-wrap:wrap}
+  .transport .btn{flex:1 1 130px}
+  .nowplaying{margin-top:12px; font-size:13px; color:var(--ink-soft); min-height:19px}
+  .nowplaying b{color:var(--ink); font-family:var(--mono)}
+
+  .banner{background:#2a1c17; border:1px solid var(--clay); color:#eecfc4; border-radius:var(--r-sm);
+    padding:12px 14px; font-size:13.5px; margin-top:16px}
+  .banner.hide{display:none}
+
+  footer{margin-top:26px; padding-top:16px; border-top:1px solid var(--edge);
+    font-size:12.5px; color:var(--ink-faint); text-align:center; line-height:1.6}
+  footer b{color:var(--ink-soft); font-weight:600}
+  .legal{margin-top:4px; font-size:11.5px; color:var(--ink-faint)}
+
+  :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
+  @media(prefers-reduced-motion:reduce){*{transition:none!important}}
+  @media(max-width:400px){
+    .wordmark{font-size:25px}
+    .pro{padding:7px 12px; font-size:12px}
+    .chip .sym{font-size:17px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="wordmark">Chord<span class="br">F</span>orge</div>
+      <p class="tagline">In-key chord progressions, a guide melody, and a <b>.mid</b> for your DAW.</p>
+    </div>
+    <!-- TODO: Stripe checkout for $29 one-time unlock -->
+    <button class="pro" id="proBtn" type="button" title="Coming soon">Unlock Pro <span class="price">$29</span></button>
+  </header>
+
+  <div class="banner hide" id="banner"></div>
+
+  <!-- CONTROLS -->
+  <section class="panel" aria-label="Progression settings">
+    <p class="eyebrow">Forge a progression</p>
+
+    <div class="field">
+      <div class="lab"><span class="name">Key</span></div>
+      <div class="seg keys" id="keySeg"></div>
+    </div>
+
+    <div class="field">
+      <div class="lab"><span class="name">Scale</span></div>
+      <div class="seg" id="modeSeg"></div>
+    </div>
+
+    <div class="field">
+      <div class="lab"><span class="name">Mood</span></div>
+      <div class="seg moods" id="moodSeg"></div>
+    </div>
+
+    <div class="field">
+      <div class="lab"><span class="name">Tempo</span><span class="val" id="bpmVal">120 BPM</span></div>
+      <input type="range" id="bpm" min="60" max="180" step="1" value="120" aria-label="Tempo in BPM">
+      <div class="ticks"><span>60</span><span>120</span><span>180</span></div>
+    </div>
+
+    <div class="field">
+      <div class="lab"><span class="name">Length</span></div>
+      <div class="seg" id="lenSeg"></div>
+    </div>
+
+    <div class="genrow">
+      <button class="btn btn-primary" id="genBtn" type="button" disabled>Loading engine…</button>
+      <button class="btn btn-ghost" id="regenBtn" type="button" disabled>Regenerate</button>
+    </div>
+  </section>
+
+  <!-- OUTPUT -->
+  <section class="panel" aria-label="Generated progression" id="outPanel">
+    <div class="out-head">
+      <h2>Progression</h2>
+      <span class="out-sub" id="outSub">—</span>
+    </div>
+    <div class="chords" id="chords"></div>
+
+    <div class="transport">
+      <button class="btn btn-primary" id="playBtn" type="button" disabled>▶ Play</button>
+      <button class="btn btn-secondary" id="exportBtn" type="button" disabled>↓ Export .mid</button>
+    </div>
+    <div class="nowplaying" id="nowplaying"></div>
+  </section>
+
+  <footer>
+    <b>ChordForge</b> — free tier. Made for bedroom producers.
+    <div class="legal">A Money Talks venture.</div>
+  </footer>
+</div>
+
+<!-- UMD globals: Tone.js and midi-writer-js. Classic scripts run before the module below. -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+<script src="https://unpkg.com/midi-writer-js@2.1.4/browser/midiwriter.js"></script>
+
+<script type="module">
+// Tonal ships no UMD for v4 — load the ESM build from jsDelivr (+esm bundle).
+(async () => {
+  const $ = (id) => document.getElementById(id);
+  const banner = $('banner');
+  const showBanner = (msg) => { banner.textContent = msg; banner.classList.remove('hide'); };
+
+  let Tonal;
+  try {
+    Tonal = await import('https://cdn.jsdelivr.net/npm/@tonaljs/tonal@4.10.0/+esm');
+  } catch (e) {
+    showBanner('Could not load the music-theory library (Tonal). Check your connection and reload.');
+    return;
+  }
+  if (typeof Tone === 'undefined')       showBanner('Tone.js failed to load — playback is unavailable. The rest still works.');
+  if (typeof MidiWriter === 'undefined') showBanner('midi-writer-js failed to load — MIDI export is unavailable.');
+
+  const { Scale, Note } = Tonal;
+
+  /* ---------- music theory ---------- */
+  const ROMAN_NUM = ['I','II','III','IV','V','VI','VII'];
+  const ROMAN_TO_DEG = { I:1, II:2, III:3, IV:4, V:5, VI:6, VII:7 };
+
+  // Mood → pools of 4-chord templates (scale-degree tokens; case is cosmetic —
+  // real chord quality is derived from the chosen scale so output is always in key).
+  const MOODS = {
+    Dreamy:     [['I','iii','IV','vi'], ['I','IV','vi','V'], ['vi','IV','I','V'], ['IV','I','V','vi']],
+    Dark:       [['i','bVI','bVII','i'], ['i','iv','bVII','bVI'], ['i','bVII','bVI','V'], ['i','v','iv','i']],
+    Epic:       [['I','V','vi','IV'], ['vi','IV','I','V'], ['I','IV','V','IV'], ['I','V','IV','V']],
+    'Lo-fi':    [['i7','iv7','bVII','III'], ['i','VI','III','VII'], ['ii7','v7','i','i'], ['vi7','ii7','V7','I']],
+    Sad:        [['i','VI','III','VII'], ['i','iv','i','v'], ['i','VII','VI','VII'], ['i','iv','VII','VI']],
+    Uplifting:  [['I','V','vi','IV'], ['I','IV','vi','V'], ['IV','V','I','I'], ['I','V','IV','vi']],
+    Jazzy:      [['ii7','V7','Imaj7','Imaj7'], ['Imaj7','vi7','ii7','V7'], ['iii7','vi7','ii7','V7'], ['Imaj7','IV7','iii7','vi7']],
+  };
+  const MOOD_LIST = Object.keys(MOODS);
+
+  const KEYS = [
+    ['C','C'], ['Db','C♯/D♭'], ['D','D'], ['Eb','D♯/E♭'], ['E','E'], ['F','F'],
+    ['Gb','F♯/G♭'], ['G','G'], ['Ab','G♯/A♭'], ['A','A'], ['Bb','A♯/B♭'], ['B','B'],
+  ];
+
+  // deterministic RNG (mulberry32) so a seed reproduces a variation
+  function rng(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function parseToken(tok){
+    const m = tok.match(/^(b?)([IViv]+)(.*)$/);
+    return { flat: m[1] === 'b', degree: ROMAN_TO_DEG[m[2].toUpperCase()], seventh: m[3].length > 0 };
+  }
+
+  // pitch classes (no octave) for a chord token
+  function buildPcs(scaleNotes, tonic, t){
+    if (t.flat){
+      const intMap = { 2:'2m', 3:'3m', 6:'6m', 7:'7m' };
+      const root = Note.transpose(tonic, intMap[t.degree]);
+      const pcs = [root, Note.transpose(root, '3M'), Note.transpose(root, '5P')]; // borrowed major triad
+      if (t.seventh) pcs.push(Note.transpose(root, '7m'));
+      return pcs.map(p => Note.simplify(p)); // avoid double accidentals in flat keys
+    }
+    const i = t.degree - 1; // diatonic: stack thirds within the scale
+    const pcs = [ scaleNotes[i % 7], scaleNotes[(i + 2) % 7], scaleNotes[(i + 4) % 7] ];
+    if (t.seventh) pcs.push(scaleNotes[(i + 6) % 7]);
+    return pcs;
+  }
+
+  // derive chord symbol + roman numeral from the actual semitone intervals
+  function analyze(pcs, t){
+    const r = Note.chroma(pcs[0]);
+    const iv = pcs.map(p => (((Note.chroma(p) - r) % 12) + 12) % 12);
+    const third = iv[1], fifth = iv[2];
+    const seventh = iv.length > 3 ? iv[3] : null;
+
+    let triad; // maj | min | dim | aug
+    if (third === 3 && fifth === 6) triad = 'dim';
+    else if (third === 4 && fifth === 8) triad = 'aug';
+    else if (third === 3) triad = 'min';
+    else triad = 'maj';
+    const isMin = triad === 'min' || triad === 'dim';
+
+    const base = pcs[0];
+    let sym, sev = null;
+    if (seventh === null){
+      sym = base + ({ maj:'', min:'m', dim:'dim', aug:'aug' }[triad]);
+    } else if (triad === 'dim'){
+      if (seventh === 9){ sev = 'dim7'; sym = base + 'dim7'; }
+      else { sev = 'o7'; sym = base + 'm7b5'; }        // half-diminished
+    } else if (triad === 'aug'){
+      sev = '7'; sym = base + 'aug7';
+    } else if (triad === 'maj'){
+      if (seventh === 11){ sev = 'maj7'; sym = base + 'maj7'; }
+      else { sev = '7'; sym = base + '7'; }             // dominant
+    } else { // min
+      if (seventh === 11){ sev = 'mMaj7'; sym = base + 'mMaj7'; }
+      else { sev = 'm7'; sym = base + 'm7'; }
+    }
+
+    let rbase = ROMAN_NUM[t.degree - 1];
+    if (isMin) rbase = rbase.toLowerCase();
+    let rn = (t.flat ? 'b' : '') + rbase;
+    if (sev === 'o7') rn += 'ø7';
+    else if (sev === 'dim7') rn += '°7';
+    else if (sev === 'maj7') rn += 'maj7';
+    else if (sev) rn += '7';
+    else if (triad === 'dim') rn += '°';
+    else if (triad === 'aug') rn += '+';
+
+    return { symbol: sym, roman: rn };
+  }
+
+  // ascending voicing → array of MIDI numbers starting near the given octave
+  function voicePcs(pcs, startOct){
+    let oct = startOct, prev = -1;
+    const out = [];
+    for (const pc of pcs){
+      const c = Note.chroma(pc);
+      if (c < prev) oct++;
+      out.push(Note.midi(pc + oct));
+      prev = c;
+    }
+    return out;
+  }
+
+  const PATTERNS = [
+    [0,1,2,1], [0,2,3,1], [2,1,0,2], [0,1,2,3],
+    [3,2,1,0], [0,0,2,3], [0,3,2,1], [1,0,2,1],
+  ];
+  // 4 quarter-notes per bar arpeggiating the chord tones (guide melody)
+  function melodyForChord(pcs, rand){
+    const tones = voicePcs(pcs, 4);
+    const pool = tones.slice();
+    pool.push(tones[0] + 12); // octave-up root for range
+    const pat = PATTERNS[Math.floor(rand() * PATTERNS.length)];
+    return pat.map(idx => {
+      let n = pool[idx % pool.length];
+      while (n > 83) n -= 12;
+      while (n < 55) n += 12;
+      return n;
+    });
+  }
+
+  function getScaleNotes(root, mode){
+    let sc = Scale.get(`${root} ${mode}`);
+    if (!sc.notes.length) sc = Scale.get(`${root} ${mode === 'minor' ? 'aeolian' : 'major'}`);
+    return sc.notes;
+  }
+
+  /* ---------- state ---------- */
+  const state = { root:'C', mode:'major', mood:'Dreamy', bpm:120, length:4, seed:12345, chords:[] };
+  let playing = false, part = null, chordSynth = null, leadSynth = null;
+
+  function generate(regen){
+    if (regen) state.seed = (state.seed + Math.floor(Math.random() * 1e6) + 1) >>> 0;
+    const rand = rng(state.seed);
+    const scaleNotes = getScaleNotes(state.root, state.mode);
+    const pool = MOODS[state.mood];
+
+    let tokens;
+    if (state.length === 4){
+      tokens = pool[Math.floor(rand() * pool.length)];
+    } else {
+      const a = Math.floor(rand() * pool.length);
+      let b = Math.floor(rand() * pool.length);
+      if (pool.length > 1 && b === a) b = (b + 1) % pool.length;
+      tokens = pool[a].concat(pool[b]);
+    }
+
+    state.chords = tokens.map(tok => {
+      const t = parseToken(tok);
+      const pcs = buildPcs(scaleNotes, state.root, t);
+      const { symbol, roman } = analyze(pcs, t);
+      return { symbol, roman, midiChord: voicePcs(pcs, 3), melody: melodyForChord(pcs, rand) };
+    });
+
+    if (playing) stop();
+    renderProgression();
+  }
+
+  /* ---------- rendering ---------- */
+  function segButton(label, pressed){
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.innerHTML = label;
+    b.setAttribute('aria-pressed', pressed ? 'true' : 'false');
+    return b;
+  }
+  function setPressed(container, activeBtn){
+    [...container.children].forEach(c => c.setAttribute('aria-pressed', c === activeBtn ? 'true' : 'false'));
+  }
+
+  function renderProgression(){
+    const keyLabel = (KEYS.find(k => k[0] === state.root) || [state.root])[0];
+    $('outSub').textContent = `${keyLabel} ${state.mode} · ${state.mood} · ${state.bpm} BPM`;
+    const wrap = $('chords');
+    wrap.innerHTML = '';
+    state.chords.forEach((ch, i) => {
+      const el = document.createElement('div');
+      el.className = 'chip';
+      el.dataset.i = i;
+      el.innerHTML = `<div class="sym">${ch.symbol}</div><div class="rn">${ch.roman}</div>`;
+      wrap.appendChild(el);
+    });
+    $('playBtn').disabled  = typeof Tone === 'undefined' || !state.chords.length;
+    $('exportBtn').disabled = typeof MidiWriter === 'undefined' || !state.chords.length;
+    $('nowplaying').textContent = '';
+  }
+
+  function highlight(idx){
+    const chips = $('chords').children;
+    for (let i = 0; i < chips.length; i++) chips[i].classList.toggle('active', i === idx);
+    if (idx >= 0 && state.chords[idx]){
+      $('nowplaying').innerHTML = `Now playing · <b>${state.chords[idx].symbol}</b>`;
+    }
+  }
+
+  /* ---------- playback (Tone.js) ---------- */
+  function ensureSynths(){
+    if (chordSynth) return;
+    chordSynth = new Tone.PolySynth(Tone.Synth, {
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.03, decay: 0.25, sustain: 0.45, release: 1.1 },
+    }).toDestination();
+    chordSynth.volume.value = -10;
+    leadSynth = new Tone.Synth({
+      oscillator: { type: 'triangle' },
+      envelope: { attack: 0.02, decay: 0.12, sustain: 0.3, release: 0.5 },
+    }).toDestination();
+    leadSynth.volume.value = -13;
+  }
+
+  async function play(){
+    if (typeof Tone === 'undefined' || !state.chords.length) return;
+    await Tone.start();                 // required by the browser autoplay policy
+    stop();                             // clear any previous transport/part
+    ensureSynths();
+    Tone.Transport.bpm.value = state.bpm;
+
+    const events = [];
+    state.chords.forEach((ch, i) => {
+      const names = ch.midiChord.map(m => Note.fromMidi(m));
+      events.push({ time: `${i}:0:0`, kind: 'chord', names, idx: i });
+      ch.melody.forEach((m, b) => events.push({ time: `${i}:${b}:0`, kind: 'lead', name: Note.fromMidi(m) }));
+    });
+
+    part = new Tone.Part((time, ev) => {
+      if (ev.kind === 'chord'){
+        chordSynth.triggerAttackRelease(ev.names, '1m', time, 0.7);
+        Tone.Draw.schedule(() => highlight(ev.idx), time);
+      } else {
+        leadSynth.triggerAttackRelease(ev.name, '4n', time, 0.85);
+      }
+    }, events);
+    part.loop = true;
+    part.loopEnd = `${state.chords.length}:0:0`;
+    part.start(0);
+
+    Tone.Transport.start();
+    playing = true;
+    $('playBtn').innerHTML = '■ Stop';
+  }
+
+  function stop(){
+    if (typeof Tone !== 'undefined'){
+      Tone.Transport.stop();
+      Tone.Transport.cancel();
+    }
+    if (part){ part.dispose(); part = null; }
+    playing = false;
+    $('playBtn').innerHTML = '▶ Play';
+    highlight(-1);
+    $('nowplaying').textContent = '';
+  }
+
+  /* ---------- MIDI export (midi-writer-js) ---------- */
+  function exportMidi(){
+    if (typeof MidiWriter === 'undefined' || !state.chords.length) return;
+    const t1 = new MidiWriter.Track(); t1.setTempo(state.bpm); t1.addTrackName('Chords');
+    state.chords.forEach(ch => t1.addEvent(new MidiWriter.NoteEvent({ pitch: ch.midiChord, duration: '1' })));
+
+    const t2 = new MidiWriter.Track(); t2.setTempo(state.bpm); t2.addTrackName('Melody');
+    state.chords.forEach(ch => ch.melody.forEach(m =>
+      t2.addEvent(new MidiWriter.NoteEvent({ pitch: [m], duration: '4' }))));
+
+    const writer = new MidiWriter.Writer([t1, t2]);
+    const a = document.createElement('a');
+    a.href = writer.dataUri();
+    const safe = `${state.root}_${state.mode}_${state.mood}`.replace(/[^a-z0-9_]+/gi, '');
+    a.download = `ChordForge_${safe}.mid`;
+    document.body.appendChild(a); a.click(); a.remove();
+  }
+
+  /* ---------- build controls ---------- */
+  const keySeg = $('keySeg');
+  KEYS.forEach(([val, label]) => {
+    const b = segButton(label, val === state.root);
+    b.addEventListener('click', () => { state.root = val; setPressed(keySeg, b); generate(false); });
+    keySeg.appendChild(b);
+  });
+
+  const modeSeg = $('modeSeg');
+  [['major','Major'], ['minor','Minor']].forEach(([val, label]) => {
+    const b = segButton(label, val === state.mode);
+    b.addEventListener('click', () => { state.mode = val; setPressed(modeSeg, b); generate(false); });
+    modeSeg.appendChild(b);
+  });
+
+  const moodSeg = $('moodSeg');
+  MOOD_LIST.forEach(m => {
+    const b = segButton(m, m === state.mood);
+    b.addEventListener('click', () => { state.mood = m; setPressed(moodSeg, b); generate(false); });
+    moodSeg.appendChild(b);
+  });
+
+  const lenSeg = $('lenSeg');
+  [[4,'4 chords'], [8,'8 chords']].forEach(([val, label]) => {
+    const b = segButton(label, val === state.length);
+    b.addEventListener('click', () => { state.length = val; setPressed(lenSeg, b); generate(false); });
+    lenSeg.appendChild(b);
+  });
+
+  const bpm = $('bpm');
+  const updateBpmFill = () => {
+    bpm.style.setProperty('--fill', ((state.bpm - 60) / 120 * 100) + '%');
+  };
+  bpm.addEventListener('input', () => {
+    state.bpm = +bpm.value;
+    $('bpmVal').textContent = `${state.bpm} BPM`;
+    updateBpmFill();
+    if (playing && typeof Tone !== 'undefined') Tone.Transport.bpm.value = state.bpm;
+    if (state.chords.length) $('outSub').textContent =
+      `${state.root} ${state.mode} · ${state.mood} · ${state.bpm} BPM`;
+  });
+  updateBpmFill();
+
+  $('genBtn').addEventListener('click', () => generate(false));
+  $('regenBtn').addEventListener('click', () => generate(true));
+  $('playBtn').addEventListener('click', () => { playing ? stop() : play(); });
+  $('exportBtn').addEventListener('click', exportMidi);
+  $('proBtn').addEventListener('click', () => {
+    const el = $('proBtn');
+    const orig = el.innerHTML;
+    el.innerHTML = 'Coming soon ✦';
+    setTimeout(() => { el.innerHTML = orig; }, 1400);
+  });
+
+  // engine ready
+  $('genBtn').disabled = false;
+  $('genBtn').textContent = 'Generate';
+  $('regenBtn').disabled = false;
+  generate(false);
+})();
+</script>
+</body>
+</html>
