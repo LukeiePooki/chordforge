@@ -77,7 +77,7 @@
       "name": "Do I need an account?",
       "acceptedAnswer": {
         "@type": "Answer",
-        "text": "No. There is no signup and no login. Everything runs in your browser and nothing you generate is uploaded. Saved progressions and the Pro unlock live in your browser's local storage, so they stay on the device you used."
+        "text": "No. There is no signup and no login. Everything runs in your browser and nothing you generate is uploaded. Saved progressions live in your browser's local storage, so they stay on the device you used. Pro is a license key instead: paste it into Restore purchase and it unlocks ChordForge on any device."
       }
     },
     {
@@ -183,7 +183,7 @@
   .num{font-family:var(--mono); font-variant-numeric:tabular-nums}
 
   /* ---------- header ---------- */
-  header.top{display:flex; align-items:flex-start; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--edge)}
+  header.top{display:flex; flex-wrap:wrap; align-items:flex-start; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--edge)}
   .brand{margin-right:auto; min-width:0}
   .wordmark{margin:0; font-family:var(--serif); font-size:var(--t-xl); line-height:1.05; letter-spacing:.005em; font-weight:800; color:var(--ink)}
   .wordmark .br{color:var(--accent)}
@@ -356,11 +356,90 @@
   .pro-cta{width:100%; font-size:var(--t-sm)}
   .pro-fine{margin:13px 0 0; text-align:center; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim)}
 
+  /* ---------- license: restore a purchase ----------
+     The buy button gets a quiet companion. Someone who already paid should never
+     have to walk back through the checkout screen to get their tool. */
+  .top-actions{display:flex; flex-direction:column; align-items:flex-end; gap:8px}
+  .restore-link{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.04em;
+    color:var(--ink-dim); background:transparent; border:1px solid transparent; border-radius:var(--r-sm);
+    padding:3px 7px; cursor:pointer; white-space:nowrap;
+    transition:color .14s ease,border-color .14s ease}
+  .restore-link:hover{color:var(--ink); border-color:var(--edge)}
+  .pro-restore{display:block; margin:12px auto 0; text-align:center}
+
+  dialog#licDialog{border:none; padding:0; background:transparent; color:var(--ink);
+    max-width:456px; width:calc(100% - 32px)}
+  dialog#licDialog::backdrop{background:rgba(4,4,6,.74); backdrop-filter:blur(2px)}
+  /* the no-<dialog> fallback still has to read as modal */
+  dialog#licDialog.is-fallback[open]{position:fixed; inset:0; z-index:99; width:100%; max-width:none;
+    display:grid; place-items:center; background:rgba(4,4,6,.74)}
+  .lic-card{position:relative; overflow:hidden; width:min(94vw,456px); background:var(--surface);
+    border:1px solid var(--edge-strong); border-radius:var(--r); padding:32px 30px 26px;
+    box-shadow:inset 0 1px 0 var(--edge-strong), 0 24px 60px -24px rgba(0,0,0,.9)}
+  .lic-card::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
+    background:var(--grain-panel); background-size:120px 120px; mix-blend-mode:soft-light; opacity:.04}
+  .lic-card > *{position:relative; z-index:1}
+  /* user-summoned, so ease-out: it arrives fast and settles */
+  dialog#licDialog[open] .lic-card{animation:licIn 200ms var(--ease-enter) both}
+  @keyframes licIn{from{opacity:0; transform:translateY(8px) scale(.985)} to{opacity:1; transform:none}}
+
+  .lic-x{position:absolute; top:14px; right:14px; z-index:2; width:30px; height:30px; border-radius:8px;
+    background:transparent; border:1px solid var(--edge); color:var(--ink-soft); font-size:19px;
+    line-height:1; cursor:pointer; transition:color .14s ease,border-color .14s ease}
+  .lic-x:hover{color:var(--ink); border-color:var(--edge-strong)}
+  .lic-eyebrow{font-family:var(--mono); font-size:var(--t-xs); letter-spacing:.16em; text-transform:uppercase;
+    color:var(--ink-dim); margin:0 0 10px}
+  .lic-title{margin:0 0 8px; font-family:var(--serif); font-size:var(--t-lg); font-weight:800;
+    line-height:1.15; letter-spacing:.005em; color:var(--ink)}
+  .lic-lede{margin:0 0 24px; font-size:var(--t-sm); line-height:1.55; color:var(--ink-soft); max-width:42ch}
+  .lic-label{display:block; margin-bottom:8px; font-family:var(--mono); font-size:var(--t-xs);
+    font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+  /* the key field: four engraved wells behind ONE input, so twenty characters read
+     as four countable groups without fragmenting focus, paste or the screen reader */
+  .lic-field{position:relative; border-radius:var(--r-sm)}
+  .lic-wells{position:absolute; inset:0; display:grid; gap:6px; grid-template-columns:repeat(4,1fr); pointer-events:none}
+  .lic-wells span{background:var(--recess); border:1px solid var(--edge); border-radius:var(--r-sm);
+    transition:border-color .14s ease}
+  .lic-input{position:relative; width:100%; background:transparent; border:none; border-radius:var(--r-sm);
+    padding:15px 10px; margin:0; font-family:var(--mono); font-size:var(--t-sm); font-weight:600;
+    letter-spacing:.14em; text-align:center; text-transform:uppercase; color:var(--ink);
+    caret-color:var(--accent); outline:none}
+  .lic-input::placeholder{color:var(--ink-dim); font-weight:400; letter-spacing:.1em}
+  .lic-field:focus-within .lic-wells span{border-color:var(--edge-strong)}
+  .lic-field:focus-within{box-shadow:0 0 0 2px var(--accent)}
+  .lic-field:has(.lic-input[aria-invalid="true"]) .lic-wells span{border-color:var(--alert)}
+  .lic-hint{margin:8px 0 0; font-family:var(--mono); font-size:var(--t-xs); line-height:1.5; color:var(--ink-dim)}
+  /* one polite live region, four tones */
+  .lic-status{margin:16px 0 0; min-height:1.4em; font-family:var(--mono); font-size:var(--t-xs); line-height:1.5}
+  .lic-status[data-tone="idle"]{color:var(--ink-dim)}
+  .lic-status[data-tone="busy"]{color:var(--ink-soft)}
+  .lic-status[data-tone="ok"]{color:var(--accent-hi)}
+  .lic-status[data-tone="error"]{color:var(--alert-ink)}
+  /* 32px of air above the one thing being asked for */
+  .lic-actions{margin-top:32px; display:flex; gap:10px; align-items:center}
+  .lic-actions .btn{flex:1 1 auto}
+  .lic-keyline{margin:0 0 6px; font-family:var(--mono); font-size:var(--t-md); font-weight:600;
+    letter-spacing:.06em; color:var(--ink); min-height:1.2em}
+  .lic-since{margin:0 0 28px; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim)}
+  .lic-fine{margin:20px 0 0; font-size:var(--t-xs); line-height:1.6; color:var(--ink-dim)}
+  .lic-card[data-unlocked="true"] .lic-form{display:none}
+  .lic-card:not([data-unlocked="true"]) .lic-licensed{display:none}
+
   @media(max-width:420px){
     .wordmark{font-size:var(--t-lg)}
     .pro{padding:8px 12px}
     .keys .nat .kn{font-size:var(--t-sm)}
     .chip .sym{font-size:var(--t-sm)}
+    .lic-card{padding:26px 20px 22px}
+    .lic-input{letter-spacing:.06em; font-size:var(--t-xs)}
+    .lic-actions{flex-wrap:wrap}
+  }
+  /* The restore link is wider than the buy button, so below this width the pair drops
+     to its own right-aligned row rather than crushing the tagline to four lines.
+     row-reverse puts the quiet action left of the loud one without reordering the DOM. */
+  @media(max-width:560px){
+    .top-actions{flex:1 1 100%; flex-direction:row-reverse; justify-content:flex-start;
+      align-items:center; gap:12px}
   }
 
   /* ---------- structure sections ---------- */
@@ -480,7 +559,10 @@
       <h1 class="wordmark">Chord<span class="br">F</span>orge</h1>
       <p class="tagline">In-key chord progressions, a guide melody, and a <b>.mid</b> for your DAW.</p>
     </div>
-    <button class="pro" id="proBtn" type="button" title="See what ChordForge Pro unlocks">Unlock Pro <span class="price num">$29</span></button>
+    <div class="top-actions">
+      <button class="pro" id="proBtn" type="button" title="See what ChordForge Pro unlocks">Unlock Pro <span class="price num">$29</span></button>
+      <button class="restore-link" id="restoreBtn" type="button">Already bought? Restore</button>
+    </div>
   </header>
 
   <div class="banner hide" id="banner"></div>
@@ -716,8 +798,9 @@
       <div class="qa">
         <dt>Do I need an account?</dt>
         <dd>No. There is no signup and no login. Everything runs in your browser and nothing you
-          generate is uploaded. Saved progressions and the Pro unlock live in your browser's local
-          storage, so they stay on the device you used.</dd>
+          generate is uploaded. Saved progressions live in your browser's local storage, so they stay
+          on the device you used. Pro is a license key instead: paste it into Restore purchase and it
+          unlocks ChordForge on any device.</dd>
       </div>
 
       <div class="qa">
@@ -792,11 +875,60 @@
       <li>Humanized export: subtle timing and velocity so the .mid plays like a take, not a grid.</li>
       <li>Batch packs: ten variations exported at once as a .mid set.</li>
       <li>Saved library: name your progressions and reload them anytime.</li>
-      <li>Everything stays in your browser. Nothing you make is uploaded.</li>
+      <li>Your music stays in your browser. Nothing you make is uploaded.</li>
     </ul>
-    <!-- GUMROAD: wire this button to the Gumroad ($29) checkout once the Merchant-of-Record listing is live. Stays disabled until then. -->
-    <button class="btn btn-primary pro-cta" id="proBuyBtn" type="button" disabled>Coming soon</button>
-    <p class="pro-fine">Checkout opens soon · unlocks in this browser</p>
+    <!-- Live Stripe checkout. Managed Payments makes Stripe merchant of record and
+         handles sales tax / VAT. On payment the webhook issues a license key and
+         emails it; the buyer redeems it below via Restore, which works on any
+         device. Verified end to end 2026-07-24. -->
+    <a class="btn btn-primary pro-cta" id="proBuyBtn" href="https://buy.stripe.com/eVq9AV1lh0jjcbF5W40kE00" target="_blank" rel="noopener">Unlock Pro · $29</a>
+    <button class="restore-link pro-restore" id="proRestoreBtn" type="button">Already bought it? Restore</button>
+    <p class="pro-fine">One payment · your key works on every device</p>
+  </div>
+</dialog>
+
+<!-- restore purchase: the key is checked against the license server, never trusted locally -->
+<dialog id="licDialog" aria-labelledby="licTitle">
+  <div class="lic-card" id="licCard" data-unlocked="false">
+    <button class="lic-x" id="licClose" type="button" aria-label="Close">×</button>
+
+    <div class="lic-form">
+      <p class="lic-eyebrow">Restore purchase</p>
+      <h2 class="lic-title" id="licTitle">Paste your license key</h2>
+      <p class="lic-lede">It is in the email you got when you paid. One key, every device: this
+        browser, your phone, a machine you have not bought yet.</p>
+
+      <form id="licForm" novalidate>
+        <label class="lic-label" for="licKey">License key</label>
+        <div class="lic-field">
+          <div class="lic-wells" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+          <input class="lic-input" id="licKey" name="license-key" type="text" inputmode="latin"
+            autocomplete="off" autocapitalize="characters" spellcheck="false" maxlength="23"
+            placeholder="ABCDE-FGHJK-MNPQR-STVWX" aria-describedby="licHint licStatus">
+        </div>
+        <p class="lic-hint" id="licHint">Twenty characters in four groups. Dashes and capitals are added for you.</p>
+        <p class="lic-status" id="licStatus" role="status" aria-live="polite" data-tone="idle"></p>
+        <div class="lic-actions">
+          <button class="btn btn-primary" id="licSubmit" type="submit">Unlock</button>
+          <button class="btn btn-ghost" id="licCancel" type="button">Cancel</button>
+        </div>
+      </form>
+
+      <p class="lic-fine">Lost the email? Reply to your receipt from the address you paid with.</p>
+    </div>
+
+    <div class="lic-licensed">
+      <p class="lic-eyebrow">Licensed</p>
+      <h2 class="lic-title" id="licTitleOn">Pro is on in this browser</h2>
+      <p class="lic-keyline num" id="licMasked"></p>
+      <p class="lic-since" id="licSince"></p>
+      <div class="lic-actions">
+        <button class="btn btn-primary" id="licDone" type="button">Back to work</button>
+        <button class="btn btn-ghost" id="licForget" type="button">Remove from this device</button>
+      </div>
+      <p class="lic-fine">Removing it here cancels nothing. The key keeps working, so you can paste
+        it again whenever you want.</p>
+    </div>
   </div>
 </dialog>
 
@@ -816,20 +948,266 @@
     play: '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span>',
     stop: '<svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="6" y="6" width="12" height="12" rx="1.5" fill="currentColor"/></svg><span>Stop</span>',
   };
-  const params = new URLSearchParams(location.search);
-  let isPro = false;
-  try { isPro = localStorage.getItem('chordforge_pro') === '1'; } catch (e) {}
-  if (params.get('pro') === '1'){ isPro = true; try { localStorage.setItem('chordforge_pro', '1'); } catch (e) {} }
+  /* ---------- licensing: verified on the server, fails closed ----------
+     The old gate was `localStorage.chordforge_pro` plus a `?pro=1` query param, and
+     both were one-line unlocks for anyone who could type. Neither exists any more.
+     A key is trusted only after the license server confirms it; the confirmation is
+     cached for a week so a paying user still works on a plane, re-checked after
+     that, and every failure path (timeout, 5xx, junk response) resolves to free. */
+  const LICENSE = (() => {
+    const VENTURE   = 'chordforge';
+    const VERIFY_URL = 'https://money-talks-platform.moneytalks.workers.dev/verify';
+    const STORE_KEY = 'mt_license_' + VENTURE;
+    const REC_V     = 1;
+    const TTL_MS    = 7  * 24 * 60 * 60 * 1000;   // trusted with no network call
+    const GRACE_MS  = 30 * 24 * 60 * 60 * 1000;   // offline grace once the TTL lapses
+    const TIMEOUT_MS = 8000;
+
+    // Safari private mode and locked-down profiles throw on localStorage. None of
+    // that may take the tool down, so every access falls back to memory.
+    let mem = null;
+    const readRec = () => {
+      let raw = null;
+      try { raw = localStorage.getItem(STORE_KEY); } catch (e) {}
+      if (raw == null) raw = mem;
+      if (!raw) return null;
+      try {
+        const r = JSON.parse(raw);
+        if (!r || r.v !== REC_V) return null;                                  // foreign schema
+        if (typeof r.key !== 'string' || typeof r.checkedAt !== 'number') return null;
+        return r;
+      } catch (e) { return null; }
+    };
+    const writeRec = (r) => { const s = JSON.stringify(r); mem = s; try { localStorage.setItem(STORE_KEY, s); } catch (e) {} };
+    const clearRec = () => { mem = null; try { localStorage.removeItem(STORE_KEY); } catch (e) {} };
+
+    // 'valid' | 'invalid' | 'unreachable'. A network problem is never 'invalid':
+    // it must not revoke a real purchase, and it must never grant one.
+    async function callVerify(key){
+      const ctl = new AbortController();
+      const timer = setTimeout(() => ctl.abort(), TIMEOUT_MS);
+      try {
+        const res = await fetch(VERIFY_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key, venture: VENTURE }),   // the key goes here and nowhere else
+          signal: ctl.signal, credentials: 'omit', cache: 'no-store',
+        });
+        if (!res.ok) return { outcome: 'unreachable' };
+        const body = await res.json();
+        if (!body || typeof body !== 'object' || body.valid !== true) return { outcome: 'invalid' };
+        if (body.venture !== VENTURE) return { outcome: 'invalid' };   // keys are venture-specific
+        return { outcome: 'valid' };
+      } catch (e) {
+        return { outcome: 'unreachable' };
+      } finally { clearTimeout(timer); }
+    }
+
+    let st = { isPro: false, status: 'unknown' };
+    const listeners = new Set();
+    const setSt = (pro, status) => {
+      if (st.isPro === pro && st.status === status) return;
+      st = { isPro: pro, status };
+      listeners.forEach(fn => { try { fn(st); } catch (e) {} });
+    };
+
+    async function check(){
+      const rec = readRec();
+      if (!rec || !rec.key){ setSt(false, 'free'); return; }
+      const age = Date.now() - rec.checkedAt;
+      if (rec.valid === true && age >= 0 && age < TTL_MS){ setSt(true, 'pro'); return; }
+      const r = await callVerify(rec.key);
+      if (r.outcome === 'valid'){
+        writeRec({ ...rec, v: REC_V, valid: true, checkedAt: Date.now() });
+        setSt(true, 'pro'); return;
+      }
+      if (r.outcome === 'invalid'){ clearRec(); setSt(false, 'free'); return; }  // refunded or never real
+      // Unreachable: the one branch a network error touches, and it can only ever
+      // extend an unlock that was already earned by a successful verification.
+      if (rec.valid === true && age < GRACE_MS) setSt(true, 'grace');
+      else setSt(false, 'free');
+    }
+
+    async function redeem(raw){
+      // Send what they typed, minus surrounding whitespace. The server normalizes
+      // case, dashes and the confusable characters, and the server is the authority.
+      const key = String(raw == null ? '' : raw).trim();
+      if (!key) return { ok: false, message: 'Enter the key from your receipt email.' };
+      const r = await callVerify(key);
+      if (r.outcome === 'valid'){
+        writeRec({ v: REC_V, key, venture: VENTURE, valid: true, checkedAt: Date.now() });
+        setSt(true, 'pro');
+        return { ok: true };
+      }
+      // Never say why: a wrong key, a refunded key and a key for the other tool all
+      // read the same from here.
+      if (r.outcome === 'invalid') return { ok: false, message: 'We could not verify that key. Check it against your receipt email.' };
+      return { ok: false, message: 'We could not reach the license server. Check your connection and try again.' };
+    }
+
+    return {
+      get isPro(){ return st.isPro; },
+      get status(){ return st.status; },
+      get hasKey(){ return !!readRec(); },
+      /* a key shown without showing a key */
+      masked(){
+        const rec = readRec();
+        if (!rec || !rec.key) return '';
+        const c = rec.key.toUpperCase().replace(/[^0-9A-Z]/g, '');
+        if (c.length < 10) return '•••••';
+        return c.slice(0, 5) + '-•••••-•••••-' + c.slice(-5);
+      },
+      redeem,
+      forget(){ clearRec(); setSt(false, 'free'); },
+      subscribe(fn){ listeners.add(fn); return () => listeners.delete(fn); },
+      ready: check().catch(() => {}),
+    };
+  })();
+
+  let isPro = LICENSE.isPro, booted = false, lastPro = null;
+  LICENSE.subscribe((s) => { isPro = s.isPro; if (booted) applyProState(); });
 
   const proDialog = $('proDialog');
-  let proOpener = null;
+  let proOpener = null, proSkipReturn = false;
   const openPro  = () => { proOpener = document.activeElement; proDialog.showModal ? proDialog.showModal() : proDialog.setAttribute('open',''); };
   const closePro = () => { proDialog.close ? proDialog.close() : proDialog.removeAttribute('open'); };
-  $('proBtn').addEventListener('click', openPro);
+  $('proBtn').addEventListener('click', () => { if (isPro) openLic($('proBtn')); else openPro(); });
   $('proClose').addEventListener('click', closePro);
   proDialog.addEventListener('click', (e) => { if (e.target === proDialog) closePro(); });
-  proDialog.addEventListener('close', () => { if (proOpener && proOpener.focus) proOpener.focus(); });
-  if (isPro){ $('proBtn').innerHTML = 'Pro · <span class="price num">unlocked</span>'; }
+  proDialog.addEventListener('close', () => {
+    if (proSkipReturn){ proSkipReturn = false; return; }   // handing focus to the license dialog
+    if (proOpener && proOpener.focus) proOpener.focus();
+  });
+
+  /* ---------- restore purchase ---------- */
+  const licDialog = $('licDialog'), licCard = $('licCard'), licForm = $('licForm'),
+        licKey = $('licKey'), licStatus = $('licStatus'), licSubmit = $('licSubmit');
+  const licNative = typeof licDialog.showModal === 'function';
+  let licOpener = null, licUntrap = null;
+
+  const licSetStatus = (text, tone) => { licStatus.textContent = text; licStatus.dataset.tone = tone || 'idle'; };
+
+  function licFill(){
+    $('licMasked').textContent = LICENSE.masked();
+    $('licSince').textContent = LICENSE.status === 'grace'
+      ? 'Verified offline. It re-checks when you are back online.'
+      : 'Verified with the license server.';
+  }
+  function licPaint(){
+    const unlocked = LICENSE.isPro && LICENSE.hasKey;
+    licCard.dataset.unlocked = unlocked ? 'true' : 'false';
+    licDialog.setAttribute('aria-labelledby', unlocked ? 'licTitleOn' : 'licTitle');
+    if (unlocked) licFill();
+  }
+
+  // Fallback trap for the no-<dialog> path ONLY, so it can never fight the native
+  // modal's own trap. Native showModal already handles Tab, Escape and inertness.
+  function licTrap(){
+    const SEL = 'a[href],button:not([disabled]),input:not([disabled]),[tabindex]:not([tabindex="-1"])';
+    const onKey = (e) => {
+      if (e.key === 'Escape'){ e.preventDefault(); closeLic(); return; }
+      if (e.key !== 'Tab') return;
+      const items = [...licDialog.querySelectorAll(SEL)]
+        .filter(el => el.offsetParent !== null || el === document.activeElement);
+      if (!items.length) return;
+      const first = items[0], last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
+    };
+    document.addEventListener('keydown', onKey, true);
+    return () => document.removeEventListener('keydown', onKey, true);
+  }
+
+  function openLic(trigger){
+    licOpener = trigger || document.activeElement;
+    licPaint();
+    licSetStatus('', 'idle');
+    licKey.value = '';
+    licKey.removeAttribute('aria-invalid');
+    if (licNative) licDialog.showModal();
+    else { licDialog.classList.add('is-fallback'); licDialog.setAttribute('open',''); licUntrap = licTrap(); }
+    const first = licCard.dataset.unlocked === 'true' ? $('licDone') : licKey;
+    if (first) first.focus();
+  }
+  // Unlocking hides the "Already bought?" trigger, so the element that opened the
+  // dialog may be gone by the time it closes. Focus must still land somewhere real.
+  function licReturnFocus(){
+    let t = licOpener;
+    if (!t || !t.focus || !t.isConnected || t.hidden || t.offsetParent === null) t = $('proBtn');
+    if (t && t.focus) t.focus();
+  }
+  function closeLic(){
+    if (licNative){ licDialog.close(); return; }
+    licDialog.removeAttribute('open');
+    licDialog.classList.remove('is-fallback');
+    if (licUntrap){ licUntrap(); licUntrap = null; }
+    licReturnFocus();
+  }
+
+  // Auto-group into four countable chunks as they type. The caret is restored by
+  // counting key characters before it, not by offset, so editing the middle of a
+  // pasted key is not hostile.
+  licKey.addEventListener('input', () => {
+    const before = licKey.value.slice(0, licKey.selectionStart ?? licKey.value.length);
+    const charsBefore = before.replace(/[^0-9A-Za-z]/g, '').length;
+    const raw = licKey.value.toUpperCase().replace(/[^0-9A-Z]/g, '').slice(0, 20);
+    licKey.value = (raw.match(/.{1,5}/g) || []).join('-');
+    const n = Math.min(charsBefore, 20);
+    const caret = n + (n > 0 ? Math.floor((n - 1) / 5) : 0);
+    try { licKey.setSelectionRange(caret, caret); } catch (e) {}
+    licKey.removeAttribute('aria-invalid');
+    if (licStatus.dataset.tone === 'error') licSetStatus('', 'idle');
+  });
+
+  licForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const typed = licKey.value.trim();
+    if (!typed){
+      licKey.setAttribute('aria-invalid', 'true');
+      licSetStatus('Enter the key from your receipt email.', 'error');
+      licKey.focus();
+      return;
+    }
+    licSubmit.disabled = true; licKey.readOnly = true;
+    licSetStatus('Checking…', 'busy');
+    const result = await LICENSE.redeem(typed);
+    licSubmit.disabled = false; licKey.readOnly = false;
+
+    if (result.ok){
+      licKey.value = '';                       // the typed key leaves the DOM
+      licSetStatus('Unlocked. Everything is on.', 'ok');
+      licFill();
+      if (proDialog.open){ proSkipReturn = true; closePro(); }
+      // let the announcement land before the view swaps
+      setTimeout(() => {
+        licCard.dataset.unlocked = 'true';
+        licDialog.setAttribute('aria-labelledby', 'licTitleOn');
+        $('licDone').focus();
+      }, 700);
+      return;
+    }
+    licKey.setAttribute('aria-invalid', 'true');
+    licSetStatus(result.message, 'error');
+    licKey.focus(); licKey.select();
+  });
+
+  $('licClose').addEventListener('click', closeLic);
+  $('licCancel').addEventListener('click', closeLic);
+  $('licDone').addEventListener('click', closeLic);
+  $('licForget').addEventListener('click', () => {
+    LICENSE.forget();
+    licPaint();
+    licSetStatus('Removed from this browser. Your key still works.', 'idle');
+    licKey.focus();
+  });
+  licDialog.addEventListener('click', (e) => { if (e.target === licDialog) closeLic(); });
+  licDialog.addEventListener('close', licReturnFocus);
+  $('restoreBtn').addEventListener('click', () => openLic($('restoreBtn')));
+  $('proRestoreBtn').addEventListener('click', () => {
+    proSkipReturn = true;                      // do not yank focus back out of the license dialog
+    closePro();
+    openLic($('proBtn'));
+  });
 
   let Tonal;
   try {
@@ -1324,6 +1702,9 @@
   }
 
   /* ---------- shareable state (URL hash) ---------- */
+  // A shared link can carry Pro-only settings. The license check has not settled
+  // when the hash is read, so those are parked here and applied if Pro lands.
+  const pendingHash = { st: null, v: null };
   function decodeHash(){
     const h = location.hash.replace(/^#/, '');
     if (!h) return;
@@ -1333,8 +1714,10 @@
     if (p.get('m') && MOODS[p.get('m')]) state.mood = p.get('m');
     const seed = parseInt(p.get('seed'), 10); if (Number.isFinite(seed)) state.seed = seed >>> 0;
     const b = parseInt(p.get('bpm'), 10); if (Number.isFinite(b)) state.bpm = Math.min(180, Math.max(60, b));
-    const st = p.get('st'); if (st && STRUCTURES[st] && (isPro || !STRUCTURES[st].pro)) state.structure = st;
-    const v = p.get('v'); if (v && VOICINGS[v] && (isPro || !VOICINGS[v].pro)) state.voicing = v;
+    const st = p.get('st');
+    if (st && STRUCTURES[st]){ if (isPro || !STRUCTURES[st].pro) state.structure = st; else pendingHash.st = st; }
+    const v = p.get('v');
+    if (v && VOICINGS[v]){ if (isPro || !VOICINGS[v].pro) state.voicing = v; else pendingHash.v = v; }
   }
   function updateHash(){
     const p = new URLSearchParams();
@@ -1390,12 +1773,8 @@
     state.mode, (v) => { state.mode = v; generate(false); });
   buildSeg($('moodSeg'), MOOD_LIST.map(m => ({ val:m, label:m })),
     state.mood, (v) => { state.mood = v; generate(false); });
-  buildSeg($('structSeg'), Object.keys(STRUCTURES).map(k => ({ val:k, label:STRUCTURES[k].label, pro:STRUCTURES[k].pro })),
-    state.structure, (v) => { state.structure = v; generate(false); });
-  buildSeg($('voiceSeg'), Object.keys(VOICINGS).map(k => ({ val:k, label:VOICINGS[k].label, pro:VOICINGS[k].pro })),
-    state.voicing, (v) => { state.voicing = v; generate(false); });   // re-voice by regenerating at the same seed
-  buildSeg($('exportSeg'), [{ val:'mech', label:'Mechanical' }, { val:'human', label:'Humanized', pro:true }],
-    state.humanize ? 'human' : 'mech', (v) => { state.humanize = (v === 'human'); });
+  // structure, voicing and export feel carry Pro locks, so they are (re)built by
+  // applyProState() whenever the license state settles or changes.
 
   const bpm = $('bpm');
   const updateBpmFill = () => { bpm.style.setProperty('--fill', ((state.bpm - 60) / 120 * 100) + '%'); };
@@ -1479,6 +1858,53 @@
     setTimeout(() => { np.classList.remove('copied'); if (!playing) np.textContent = ''; }, 1800);
   }
 
+  /* ---------- license state, painted onto every Pro surface ----------
+     Called at boot and again whenever the server check settles, a key is redeemed
+     or a key is removed. Idempotent: it only regenerates when Pro actually flips,
+     and it regenerates at the SAME seed, so the progression is identical and only
+     the voicing and the section plan change. */
+  function applyProState(){
+    const pro = LICENSE.isPro;
+
+    $('proBtn').innerHTML = pro
+      ? 'Pro · <span class="price num">unlocked</span>'
+      : 'Unlock Pro <span class="price num">$29</span>';
+    $('proBtn').title = pro ? 'Manage your ChordForge license' : 'See what ChordForge Pro unlocks';
+    $('restoreBtn').hidden = pro;
+    $('proRestoreBtn').hidden = pro;
+
+    if (pro){
+      if (pendingHash.st && STRUCTURES[pendingHash.st]){ state.structure = pendingHash.st; pendingHash.st = null; }
+      if (pendingHash.v && VOICINGS[pendingHash.v]){ state.voicing = pendingHash.v; pendingHash.v = null; }
+    } else {
+      // a key that was removed or revoked drops the tool back to the free settings
+      if (STRUCTURES[state.structure] && STRUCTURES[state.structure].pro) state.structure = 'loop';
+      if (VOICINGS[state.voicing] && VOICINGS[state.voicing].pro) state.voicing = 'close';
+      state.humanize = false;
+    }
+
+    buildSeg($('structSeg'), Object.keys(STRUCTURES).map(k => ({ val:k, label:STRUCTURES[k].label, pro:STRUCTURES[k].pro })),
+      state.structure, (v) => { state.structure = v; generate(false); });
+    buildSeg($('voiceSeg'), Object.keys(VOICINGS).map(k => ({ val:k, label:VOICINGS[k].label, pro:VOICINGS[k].pro })),
+      state.voicing, (v) => { state.voicing = v; generate(false); });   // re-voice by regenerating at the same seed
+    buildSeg($('exportSeg'), [{ val:'mech', label:'Mechanical' }, { val:'human', label:'Humanized', pro:true }],
+      state.humanize ? 'human' : 'mech', (v) => { state.humanize = (v === 'human'); });
+
+    $('batchBtn').classList.toggle('locked', !pro);
+    $('batchBtn').innerHTML = pro ? 'Export pack of 10' : 'Export pack of 10 <span class="lock">Pro</span>';
+    $('saveBtn').classList.toggle('locked', !pro);
+    $('saveBtn').innerHTML  = pro ? 'Save to library' : 'Save to library <span class="lock">Pro</span>';
+
+    renderLib();
+    // while the license dialog is open it owns its own painting (the unlocked view
+    // is held back a beat so the success announcement lands first)
+    if (!licDialog.open) licPaint();
+
+    const flipped = lastPro !== null && lastPro !== pro;
+    lastPro = pro;
+    if (flipped && state.chords.length) generate(false);
+  }
+
   /* ---------- wiring ---------- */
   $('genBtn').addEventListener('click', () => generate(false));
   $('regenBtn').addEventListener('click', () => generate(true));
@@ -1492,15 +1918,13 @@
   $('batchBtn').addEventListener('click', () => { if (!isPro){ openPro(); return; } batchExport(); });
   $('saveBtn').addEventListener('click', saveCurrent);
   $('libUnlock').addEventListener('click', openPro);
-  if (!isPro){
-    $('batchBtn').classList.add('locked'); $('batchBtn').innerHTML = 'Export pack of 10 <span class="lock">Pro</span>';
-    $('saveBtn').classList.add('locked');  $('saveBtn').innerHTML  = 'Save to library <span class="lock">Pro</span>';
-  }
 
-  // engine ready — restore any shared state, sync the controls, render the library
+  // engine ready — restore any shared state, paint the license state, sync controls
   decodeHash();
+  booted = true;
+  applyProState();          // builds the Pro-gated segments and the library
   syncControls();
-  renderLib();
+  LICENSE.ready.then(() => { if (booted) applyProState(); });
   $('genBtn').disabled = false;
   $('genBtn').textContent = 'Generate';
   $('regenBtn').disabled = false;
