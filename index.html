@@ -13,12 +13,27 @@
 <meta name="twitter:card" content="summary">
 <style>
   :root{
-    /* warm, hue-biased ramp — one temperature, ground to ink */
-    --ground:#0F0E0C; --surface:#171512; --elevated:#211E18; --key-black:#0B0A08;
-    --edge:rgba(236,231,219,.09); --edge-strong:rgba(236,231,219,.18);
-    --ink:#ECE7DB; --ink-soft:#A39C8C; --ink-faint:#736C5D;
-    --brass:#C6A15B; --brass-hi:#D3B26F; --brass-ink:#211906; --brass-glow:rgba(198,161,91,.16);
-    --clay:#C46A4E;
+    /* ---------- neutral dark ramp ----------
+       Copied from Ableton Live 11 dark / Linear / Vercel: a NEUTRAL gray ground
+       (no hue bias), near-white primary ink, a readable gray secondary. Warmth is
+       carried by the serif and the grain, never by tinting the whole ramp. */
+    --ground:#0A0A0C; --surface:#121216; --elevated:#1A1A20; --raised:#26262E; --recess:#08080A;
+    --raised-hi:#32323C;
+    --edge:rgba(255,255,255,.10); --edge-strong:rgba(255,255,255,.22);
+    --ink:#F5F6F8; --ink-soft:#B4B8C2; --ink-dim:#9096A1;
+
+    /* ---------- the single accent ----------
+       Serum / Splice territory: one genuinely saturated cyan. It is spent on the
+       primary action and on whatever is live right now. Nothing else may wear it. */
+    --accent:#22C7F5; --accent-hi:#7CDEFB; --accent-low:#1C6A85;
+    --accent-ink:#04141B; --accent-glow:rgba(34,199,245,.26);
+
+    /* step-grid wells — shared with Groove so the two read as one system */
+    --cell-off:#191920; --cell-bar:#24242E; --cell-ph:#3A3A46;
+
+    /* the only other hue in the system: failure */
+    --alert:#FF6B4A; --alert-bg:#1E1210; --alert-ink:#FFD3C6;
+
     --serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
     --mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code","Roboto Mono",Menlo,monospace;
 
@@ -43,34 +58,35 @@
     -webkit-font-smoothing:antialiased; min-height:100vh}
   /* body grain */
   body::before{content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
-    background:var(--grain-body); background-size:180px 180px; mix-blend-mode:soft-light; opacity:.035}
+    background:var(--grain-body); background-size:180px 180px; mix-blend-mode:soft-light; opacity:.03}
   .wrap{position:relative; z-index:1; max-width:700px; margin:0 auto; padding:24px 16px 48px}
   .num{font-family:var(--mono); font-variant-numeric:tabular-nums}
 
   /* ---------- header ---------- */
   header.top{display:flex; align-items:flex-start; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--edge)}
   .brand{margin-right:auto; min-width:0}
-  .wordmark{font-family:var(--serif); font-size:var(--t-xl); line-height:1.05; letter-spacing:.005em; font-weight:800}
-  .wordmark .br{color:var(--brass)}
+  .wordmark{font-family:var(--serif); font-size:var(--t-xl); line-height:1.05; letter-spacing:.005em; font-weight:800; color:var(--ink)}
+  .wordmark .br{color:var(--accent)}
   .tagline{margin:8px 0 0; color:var(--ink-soft); font-size:var(--t-xs); line-height:1.5; max-width:52ch; font-weight:400}
   .tagline b{color:var(--ink); font-weight:700; font-family:var(--mono); font-size:.92em}
-  /* the one brass CTA — hairline at rest, fills on hover, real press */
-  .pro{font-family:var(--serif); font-size:var(--t-xs); font-weight:700; color:var(--brass);
-    background:transparent; border:1px solid var(--brass); border-radius:100px; padding:9px 15px;
+  /* Unlock Pro is a SECONDARY action — neutral outline, light text, no accent fill */
+  .pro{font-family:var(--serif); font-size:var(--t-xs); font-weight:700; color:var(--ink);
+    background:transparent; border:1px solid var(--edge-strong); border-radius:100px; padding:9px 15px;
     cursor:pointer; white-space:nowrap; letter-spacing:.01em; display:inline-flex; align-items:baseline; gap:7px;
-    transition:background .16s ease,color .16s ease,transform .15s var(--ease-enter),filter .15s ease}
-  .pro:hover{background:var(--brass); color:var(--brass-ink)}
-  .pro:active{transform:scale(.97); filter:brightness(1.04)}
-  .pro .price{font-family:var(--mono); font-weight:600; font-size:var(--t-sm); letter-spacing:0}
+    transition:background .16s ease,color .16s ease,border-color .16s ease,transform .15s var(--ease-enter),filter .15s ease}
+  .pro:hover{background:var(--raised); border-color:var(--ink-dim)}
+  .pro:active{transform:scale(.97); filter:brightness(1.06)}
+  .pro .price{font-family:var(--mono); font-weight:600; font-size:var(--t-sm); letter-spacing:0; color:var(--ink-soft)}
 
   .panel{position:relative; background:var(--surface); border:1px solid var(--edge); border-radius:var(--r); padding:20px; margin-top:16px}
-  .eyebrow{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint); margin:0 0 18px}
+  .eyebrow{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim); margin:0 0 18px}
 
   .field{margin-bottom:22px}
   .field:last-child{margin-bottom:0}
   .field > .lab{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:11px}
   .field .lab .name{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
-  .field .lab .val{font-family:var(--mono); font-size:var(--t-sm); color:var(--brass); font-variant-numeric:tabular-nums; font-weight:600}
+  /* the readout is DATA, not a state — near-white mono, never coloured */
+  .field .lab .val{font-family:var(--mono); font-size:var(--t-sm); color:var(--ink); font-variant-numeric:tabular-nums; font-weight:600}
 
   /* ---------- key selector: an instrument, not a matrix ---------- */
   .keys{display:grid; grid-template-columns:repeat(14,1fr); grid-template-rows:38px 56px; gap:5px}
@@ -79,46 +95,47 @@
   .keys button:hover{color:var(--ink)}
   .keys button:active{transform:translateY(1px)}
   /* naturals — the prominent primary row (piano whites) */
-  .keys .nat{background:var(--elevated); border:1px solid var(--edge); border-radius:3px 3px 7px 7px;
+  .keys .nat{background:var(--raised); border:1px solid var(--edge); border-radius:3px 3px 7px 7px; color:var(--ink);
     display:flex; align-items:flex-end; justify-content:center; padding-bottom:11px}
-  .keys .nat:hover{border-color:var(--edge-strong)}
+  .keys .nat:hover{border-color:var(--edge-strong); background:var(--raised-hi)}
   .keys .nat .kn{font-size:var(--t-md); font-weight:600; line-height:1}
   /* accidentals — recessed, narrower, offset above the gaps (piano blacks) */
-  .keys .acc{background:var(--key-black); border:1px solid var(--edge-strong); border-radius:0 0 6px 6px;
-    width:80%; justify-self:center; z-index:2; box-shadow:0 4px 10px rgba(0,0,0,.5);
+  .keys .acc{background:var(--recess); border:1px solid var(--edge-strong); border-radius:0 0 6px 6px;
+    width:80%; justify-self:center; z-index:2; box-shadow:0 4px 10px rgba(0,0,0,.55);
     display:flex; flex-direction:column; align-items:center; justify-content:center; gap:1px; padding:5px 0}
-  .keys .acc:hover{border-color:var(--ink-faint)}
-  .keys .acc .ks{font-size:10px; color:var(--ink-faint); line-height:1; letter-spacing:.02em}
-  .keys .acc .kf{font-size:var(--t-xs); font-weight:600; line-height:1}
-  /* the selected/tonic key — the single brass moment in the selector */
-  .keys button[aria-pressed="true"]{background:var(--brass); border-color:var(--brass); color:var(--brass-ink)}
-  .keys .nat[aria-pressed="true"] .kn{color:var(--brass-ink)}
-  .keys .acc[aria-pressed="true"]{box-shadow:0 4px 10px rgba(0,0,0,.5),0 0 0 3px var(--brass-glow)}
-  .keys .acc[aria-pressed="true"] .ks{color:var(--brass-ink); opacity:.7}
-  .keys .acc[aria-pressed="true"] .kf{color:var(--brass-ink)}
+  .keys .acc:hover{border-color:var(--ink-dim)}
+  .keys .acc .ks{font-size:10px; color:var(--ink-dim); line-height:1; letter-spacing:.02em}
+  .keys .acc .kf{font-size:var(--t-xs); font-weight:600; line-height:1; color:var(--ink-soft)}
+  /* the tonic — THE live state on this screen, and the only accent among the controls */
+  .keys button[aria-pressed="true"]{background:var(--accent); border-color:var(--accent); color:var(--accent-ink)}
+  .keys .nat[aria-pressed="true"] .kn{color:var(--accent-ink)}
+  .keys .acc[aria-pressed="true"]{box-shadow:0 4px 10px rgba(0,0,0,.55),0 0 0 3px var(--accent-glow)}
+  .keys .acc[aria-pressed="true"] .ks{color:var(--accent-ink); opacity:.75}
+  .keys .acc[aria-pressed="true"] .kf{color:var(--accent-ink)}
 
   /* ---------- segmented option groups (scale / mood / length) ---------- */
-  /* brass discipline: selected reads as engraved emphasis, never a brass fill */
+  /* selection reads as a lit neutral chip: raised fill, white text, engraved underline.
+     No accent — the accent belongs to the tonic and to Generate. */
   .seg{display:flex; flex-wrap:wrap; gap:8px}
   .seg button{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.03em; color:var(--ink-soft);
     background:transparent; border:1px solid var(--edge); border-radius:var(--r-sm);
     padding:9px 14px; cursor:pointer;
     transition:border-color .14s ease,color .14s ease,background .14s ease,box-shadow .14s ease}
-  .seg button:hover{border-color:var(--edge-strong); color:var(--ink)}
-  .seg button[aria-pressed="true"]{background:var(--elevated); border-color:var(--edge-strong); color:var(--ink);
-    box-shadow:inset 0 -2px 0 var(--brass)}
+  .seg button:hover{border-color:var(--edge-strong); color:var(--ink); background:var(--elevated)}
+  .seg button[aria-pressed="true"]{background:var(--raised); border-color:var(--edge-strong); color:var(--ink);
+    box-shadow:inset 0 -2px 0 var(--ink-soft)}
   .moods button{flex:0 0 auto}
 
-  /* tempo slider — value shown in a warm neutral, brass held only for the needle */
+  /* tempo slider — a neutral instrument: bright track, white knob, accent only on focus */
   input[type=range]{-webkit-appearance:none; appearance:none; width:100%; height:4px; border-radius:4px;
-    background:linear-gradient(90deg,var(--ink-faint) var(--fill,50%),var(--elevated) var(--fill,50%)); outline:none; margin:8px 0}
+    background:linear-gradient(90deg,var(--ink-soft) var(--fill,50%),var(--elevated) var(--fill,50%)); outline:none; margin:8px 0}
   input[type=range]::-webkit-slider-thumb{-webkit-appearance:none; width:18px; height:18px; border-radius:50%;
-    background:var(--ground); cursor:pointer; border:2px solid var(--brass); box-shadow:0 1px 3px rgba(0,0,0,.5)}
+    background:var(--ground); cursor:pointer; border:2px solid var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.6)}
   input[type=range]::-moz-range-thumb{width:18px; height:18px; border-radius:50%; background:var(--ground);
-    cursor:pointer; border:2px solid var(--brass); box-shadow:0 1px 3px rgba(0,0,0,.5)}
-  input[type=range]:focus-visible::-webkit-slider-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
-  input[type=range]:focus-visible::-moz-range-thumb{box-shadow:0 0 0 4px var(--brass-glow)}
-  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint); margin-top:4px}
+    cursor:pointer; border:2px solid var(--ink); box-shadow:0 1px 3px rgba(0,0,0,.6)}
+  input[type=range]:focus-visible::-webkit-slider-thumb{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-glow)}
+  input[type=range]:focus-visible::-moz-range-thumb{border-color:var(--accent); box-shadow:0 0 0 4px var(--accent-glow)}
+  .ticks{display:flex; justify-content:space-between; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim); margin-top:4px}
 
   /* ---------- buttons ---------- */
   .genrow{display:flex; gap:10px; margin-top:6px}
@@ -126,76 +143,79 @@
     padding:13px 18px; cursor:pointer; border:1px solid transparent;
     transition:background .15s ease,border-color .15s ease,color .15s ease,opacity .15s ease,transform .15s var(--ease-enter),filter .15s ease;
     display:inline-flex; align-items:center; justify-content:center; gap:9px}
-  .btn:disabled{opacity:.4; cursor:not-allowed}
+  .btn:disabled{opacity:.45; cursor:not-allowed}
   .btn:active:not(:disabled){transform:scale(.985); filter:brightness(1.06)}
-  /* Generate — the single primary action, the one brass fill among controls */
-  .btn-primary{flex:1; color:var(--brass-ink); background:var(--brass); border-color:var(--brass)}
-  .btn-primary:hover:not(:disabled){background:var(--brass-hi); border-color:var(--brass-hi)}
+  /* Generate — the single primary action, the one accent fill among controls */
+  .btn-primary{flex:1; color:var(--accent-ink); background:var(--accent); border-color:var(--accent)}
+  .btn-primary:hover:not(:disabled){background:var(--accent-hi); border-color:var(--accent-hi)}
+    /* strong-but-neutral: Play matters, but the accent is already spent on Generate */
+  .btn-solid{color:var(--ink); background:var(--raised); border-color:var(--edge-strong)}
+  .btn-solid:hover:not(:disabled){background:var(--raised-hi); border-color:var(--ink-dim)}
   .btn-secondary{color:var(--ink); background:transparent; border-color:var(--edge-strong)}
-  .btn-secondary:hover:not(:disabled){border-color:var(--brass); color:var(--brass)}
+  .btn-secondary:hover:not(:disabled){border-color:var(--ink-dim); background:var(--elevated)}
   .btn-ghost{color:var(--ink-soft); background:transparent; border-color:var(--edge)}
-  .btn-ghost:hover:not(:disabled){color:var(--ink); border-color:var(--ink-faint)}
+  .btn-ghost:hover:not(:disabled){color:var(--ink); border-color:var(--ink-dim)}
 
   /* ---------- output stage: the proof of value ---------- */
   #outPanel{position:relative; overflow:hidden; padding:clamp(28px,7vw,48px) clamp(20px,5vw,36px);
-    margin-top:32px; background:var(--surface); box-shadow:inset 0 1px 0 var(--brass)}
+    margin-top:32px; background:var(--surface); box-shadow:inset 0 1px 0 var(--edge-strong)}
   /* tuned panel grain, soft-light 4% */
   #outPanel::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
-    background:var(--grain-panel); background-size:120px 120px; mix-blend-mode:soft-light; opacity:.045}
+    background:var(--grain-panel); background-size:120px 120px; mix-blend-mode:soft-light; opacity:.04}
   /* signature quirk: the sounding chord as a low-contrast serif watermark */
   .stage-mark{position:absolute; z-index:0; right:-.06em; bottom:-.14em; pointer-events:none; user-select:none;
     font-family:var(--serif); font-weight:800; font-style:italic; line-height:.8; white-space:nowrap;
-    font-size:clamp(88px,30vw,190px); color:rgba(236,231,219,.05); letter-spacing:-.02em}
+    font-size:clamp(88px,30vw,190px); color:rgba(245,246,248,.055); letter-spacing:-.02em}
   .out-head,.chords,.transport,.nowplaying{position:relative; z-index:1}
 
   .out-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:22px; flex-wrap:wrap}
-  .out-head h2{margin:0; font-family:var(--serif); font-size:var(--t-lg); font-weight:800; letter-spacing:.005em}
+  .out-head h2{margin:0; font-family:var(--serif); font-size:var(--t-lg); font-weight:800; letter-spacing:.005em; color:var(--ink)}
   .out-sub{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); text-align:right}
   .chords{display:grid; grid-template-columns:repeat(auto-fit,minmax(72px,1fr)); gap:10px}
-  .chip{background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
+  .chip{background:var(--raised); border:1px solid var(--edge); border-radius:var(--r-sm);
     padding:16px 8px 13px; text-align:center;
     transition:border-color .14s ease,box-shadow .16s ease,background .16s ease,transform .15s var(--ease-enter),filter .15s ease;
     animation:chipIn .32s var(--ease-enter) both}
   .chip .sym{font-family:var(--mono); font-size:var(--t-md); font-weight:600; color:var(--ink); line-height:1.1; word-break:break-word; font-variant-numeric:tabular-nums}
   .chip .rn{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); margin-top:7px; letter-spacing:.02em}
-  /* the sounding chip — the brass moment during playback, presses on trigger */
-  .chip.active{border-color:var(--brass); background:var(--brass); box-shadow:0 0 0 3px var(--brass-glow);
-    transform:scale(.965); filter:brightness(1.08)}
-  .chip.active .sym{color:var(--brass-ink)}
-  .chip.active .rn{color:var(--brass-ink); opacity:.72}
+  /* the sounding chip — the accent moment, and only while it sounds */
+  .chip.active{border-color:var(--accent); background:var(--accent); box-shadow:0 0 0 3px var(--accent-glow);
+    transform:scale(.965); filter:brightness(1.04)}
+  .chip.active .sym{color:var(--accent-ink)}
+  .chip.active .rn{color:var(--accent-ink); opacity:.78}
 
   .transport{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap}
   .transport .btn{flex:1 1 130px}
   .nowplaying{margin-top:14px; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); min-height:1.3em}
   .nowplaying b{color:var(--ink); font-family:var(--mono)}
 
-  .banner{background:#241813; border:1px solid var(--clay); color:#eecfc4; border-radius:var(--r-sm);
+  .banner{background:var(--alert-bg); border:1px solid var(--alert); color:var(--alert-ink); border-radius:var(--r-sm);
     padding:12px 14px; font-size:var(--t-xs); font-family:var(--mono); margin-top:16px}
   .banner.hide{display:none}
 
   footer{margin-top:32px; padding-top:18px; border-top:1px solid var(--edge);
     font-size:var(--t-xs); color:var(--ink-soft); text-align:center; line-height:1.7}
   footer b{color:var(--ink); font-weight:700}
-  .legal{margin-top:5px; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint)}
+  .legal{margin-top:5px; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim)}
 
-  :focus-visible{outline:2px solid var(--brass); outline-offset:2px; border-radius:4px}
+  :focus-visible{outline:2px solid var(--accent); outline-offset:2px; border-radius:4px}
   @media(prefers-reduced-motion:reduce){*{transition:none!important; animation:none!important}}
 
   @keyframes chipIn{from{opacity:0; transform:translateY(7px)} to{opacity:1; transform:none}}
 
-  /* length lock badge */
+  /* length lock badge — a quiet neutral chip, never a badge of honour */
   .lock{display:inline-block; margin-left:7px; font-family:var(--mono); font-size:10px; font-weight:600;
-    letter-spacing:.08em; text-transform:uppercase; color:var(--brass);
-    border:1px solid var(--brass); border-radius:100px; padding:1px 6px; vertical-align:1px}
-  .seg button[aria-pressed="true"] .lock{color:var(--brass); border-color:var(--brass)}
+    letter-spacing:.08em; text-transform:uppercase; color:var(--ink-soft);
+    background:rgba(255,255,255,.07); border:1px solid var(--edge-strong); border-radius:100px; padding:1px 6px; vertical-align:1px}
+  .seg button[aria-pressed="true"] .lock{color:var(--ink); border-color:var(--edge-strong)}
 
   /* ---------- unlock dialog ---------- */
   dialog#proDialog{border:none; padding:0; background:transparent; color:var(--ink);
     max-width:410px; width:calc(100% - 32px)}
-  dialog#proDialog::backdrop{background:rgba(6,5,4,.68); backdrop-filter:blur(2px)}
+  dialog#proDialog::backdrop{background:rgba(4,4,6,.72); backdrop-filter:blur(2px)}
   .pro-card{position:relative; overflow:hidden; background:var(--elevated); border:1px solid var(--edge-strong);
     border-radius:var(--r); padding:28px 26px 24px;
-    box-shadow:inset 0 1px 0 var(--brass), 0 24px 64px rgba(0,0,0,.55)}
+    box-shadow:inset 0 1px 0 var(--edge-strong), 0 24px 64px rgba(0,0,0,.6)}
   .pro-card::before{content:""; position:absolute; inset:0; z-index:0; pointer-events:none;
     background:var(--grain-panel); background-size:120px 120px; mix-blend-mode:soft-light; opacity:.04}
   .pro-card > *{position:relative; z-index:1}
@@ -204,17 +224,17 @@
     line-height:1; cursor:pointer; transition:color .14s ease,border-color .14s ease}
   .pro-x:hover{color:var(--ink); border-color:var(--edge-strong)}
   .pro-eyebrow{font-family:var(--mono); font-size:var(--t-xs); letter-spacing:.16em; text-transform:uppercase;
-    color:var(--ink-faint); margin:0 0 16px}
-  /* the price, stated like an adult: exact, large, mono */
+    color:var(--ink-dim); margin:0 0 16px}
+  /* the price, stated like an adult: exact, large, mono, white */
   .pro-price{display:flex; align-items:baseline; gap:12px; margin:0 0 6px}
-  .pro-price .amount{font-family:var(--mono); font-size:var(--t-2xl); font-weight:700; color:var(--brass); line-height:1; letter-spacing:-.01em}
+  .pro-price .amount{font-family:var(--mono); font-size:var(--t-2xl); font-weight:700; color:var(--ink); line-height:1; letter-spacing:-.01em}
   .pro-price .once{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); letter-spacing:.06em; text-transform:uppercase}
   .pro-lede{margin:0 0 20px; color:var(--ink-soft); font-size:var(--t-sm); line-height:1.55; max-width:44ch}
   .pro-list{list-style:none; margin:0 0 22px; padding:0; display:flex; flex-direction:column; gap:11px}
   .pro-list li{position:relative; padding-left:24px; font-size:var(--t-sm); line-height:1.45; color:var(--ink); font-weight:400}
-  .pro-list li::before{content:"·"; position:absolute; left:6px; top:-.05em; color:var(--brass); font-weight:700; font-size:1.4em; line-height:1}
+  .pro-list li::before{content:"·"; position:absolute; left:6px; top:-.05em; color:var(--ink-dim); font-weight:700; font-size:1.4em; line-height:1}
   .pro-cta{width:100%; font-size:var(--t-sm)}
-  .pro-fine{margin:13px 0 0; text-align:center; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint)}
+  .pro-fine{margin:13px 0 0; text-align:center; font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim)}
 
   @media(max-width:420px){
     .wordmark{font-size:var(--t-lg)}
@@ -227,9 +247,9 @@
   .chords{display:flex; flex-direction:column; gap:20px}
   .chord-grid{display:grid; gap:10px}
   .section{display:flex; flex-direction:column; gap:10px}
-  .section-label{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
-  /* the chorus lifts — its label carries the brass */
-  .section:nth-child(2) .section-label{color:var(--brass)}
+  .section-label{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim)}
+  /* the chorus lifts — by brightness, not by hue */
+  .section:nth-child(2) .section-label{color:var(--ink)}
 
   /* ---------- Pro studio tools ---------- */
   .protools{position:relative; z-index:1; margin-top:26px; padding-top:22px; border-top:1px solid var(--edge)}
@@ -238,14 +258,14 @@
   .tool-row + .tool-row{margin-top:14px}
   .tool-lab{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
   .tool-row .btn{flex:0 1 auto}
-  /* locked Pro control: dimmed, brass lock, still clickable to open the dialog */
-  .locked{opacity:.55}
-  .locked:hover{opacity:.78}
+  /* locked Pro control: dimmed, still clickable to open the dialog */
+  .locked{opacity:.72}
+  .locked:hover{opacity:.92}
 
   /* ---------- library ---------- */
   #libPanel .lib-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:16px; flex-wrap:wrap}
-  #libPanel .lib-head h2{margin:0; font-family:var(--serif); font-size:var(--t-md); font-weight:800; letter-spacing:.005em}
-  .lib-empty{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint)}
+  #libPanel .lib-head h2{margin:0; font-family:var(--serif); font-size:var(--t-md); font-weight:800; letter-spacing:.005em; color:var(--ink)}
+  .lib-empty{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim)}
   .lib-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
   .lib-item{display:flex; align-items:center; gap:12px; background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm); padding:12px 14px}
   .lib-item .li-main{min-width:0; margin-right:auto}
@@ -253,16 +273,16 @@
   .lib-item .li-meta{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); margin-top:3px}
   .li-btn{font-family:var(--mono); font-size:var(--t-xs); font-weight:600; letter-spacing:.04em; color:var(--ink-soft);
     background:transparent; border:1px solid var(--edge); border-radius:100px; padding:6px 12px; cursor:pointer;
-    transition:color .14s ease,border-color .14s ease}
-  .li-btn:hover{color:var(--ink); border-color:var(--edge-strong)}
-  .li-btn.load:hover{color:var(--brass); border-color:var(--brass)}
-  .lib-locked{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint);
+    transition:color .14s ease,border-color .14s ease,background .14s ease}
+  .li-btn:hover{color:var(--ink); border-color:var(--edge-strong); background:var(--raised)}
+  .li-btn.load:hover{color:var(--ink); border-color:var(--ink-dim)}
+  .lib-locked{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft);
     display:flex; align-items:center; gap:10px; flex-wrap:wrap}
-  .lib-locked .li-btn{color:var(--brass); border-color:var(--brass)}
+  .lib-locked .li-btn{color:var(--ink); border-color:var(--edge-strong)}
   [hidden]{display:none!important}
 
   /* share "copied" state — colour only, no layout shift */
-  .nowplaying.copied{color:var(--brass)}
+  .nowplaying.copied{color:var(--accent)}
 </style>
 </head>
 <body>
@@ -328,7 +348,7 @@
     <div class="chords" id="chords"></div>
 
     <div class="transport">
-      <button class="btn btn-primary" id="playBtn" type="button" disabled><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span></button>
+      <button class="btn btn-solid" id="playBtn" type="button" disabled><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span></button>
       <button class="btn btn-secondary" id="exportBtn" type="button" disabled><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v10m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Export .mid</span></button>
       <button class="btn btn-ghost" id="shareBtn" type="button" disabled><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 12h8m0 0l-3-3m3 3l-3 3M4 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Share</span></button>
     </div>
@@ -955,7 +975,7 @@
     keySeg.appendChild(keyButton(val, `<span class="ks">${sharp}</span><span class="kf">${flat}</span>`,
       `${flat}, also ${sharp}`, 'acc', col, '1 / 2')));
 
-  // segmented builder with Pro gating: locked options dim + carry a brass lock and
+  // segmented builder with Pro gating: locked options dim + carry a neutral lock chip and
   // open the Pro dialog on click, so real usage collides with the upsell.
   function buildSeg(container, items, current, onPick){
     container.innerHTML = '';
