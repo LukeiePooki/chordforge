@@ -222,6 +222,47 @@
     .keys .nat .kn{font-size:var(--t-sm)}
     .chip .sym{font-size:var(--t-sm)}
   }
+
+  /* ---------- structure sections ---------- */
+  .chords{display:flex; flex-direction:column; gap:20px}
+  .chord-grid{display:grid; gap:10px}
+  .section{display:flex; flex-direction:column; gap:10px}
+  .section-label{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.16em; text-transform:uppercase; color:var(--ink-faint)}
+  /* the chorus lifts — its label carries the brass */
+  .section:nth-child(2) .section-label{color:var(--brass)}
+
+  /* ---------- Pro studio tools ---------- */
+  .protools{position:relative; z-index:1; margin-top:26px; padding-top:22px; border-top:1px solid var(--edge)}
+  .protools .eyebrow{margin-bottom:16px}
+  .tool-row{display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .tool-row + .tool-row{margin-top:14px}
+  .tool-lab{font-family:var(--mono); font-size:var(--t-xs); font-weight:500; letter-spacing:.12em; text-transform:uppercase; color:var(--ink-soft)}
+  .tool-row .btn{flex:0 1 auto}
+  /* locked Pro control: dimmed, brass lock, still clickable to open the dialog */
+  .locked{opacity:.55}
+  .locked:hover{opacity:.78}
+
+  /* ---------- library ---------- */
+  #libPanel .lib-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; margin-bottom:16px; flex-wrap:wrap}
+  #libPanel .lib-head h2{margin:0; font-family:var(--serif); font-size:var(--t-md); font-weight:800; letter-spacing:.005em}
+  .lib-empty{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint)}
+  .lib-list{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:8px}
+  .lib-item{display:flex; align-items:center; gap:12px; background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm); padding:12px 14px}
+  .lib-item .li-main{min-width:0; margin-right:auto}
+  .lib-item .li-name{font-family:var(--serif); font-weight:700; font-size:var(--t-sm); color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .lib-item .li-meta{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-soft); margin-top:3px}
+  .li-btn{font-family:var(--mono); font-size:var(--t-xs); font-weight:600; letter-spacing:.04em; color:var(--ink-soft);
+    background:transparent; border:1px solid var(--edge); border-radius:100px; padding:6px 12px; cursor:pointer;
+    transition:color .14s ease,border-color .14s ease}
+  .li-btn:hover{color:var(--ink); border-color:var(--edge-strong)}
+  .li-btn.load:hover{color:var(--brass); border-color:var(--brass)}
+  .lib-locked{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-faint);
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+  .lib-locked .li-btn{color:var(--brass); border-color:var(--brass)}
+  [hidden]{display:none!important}
+
+  /* share "copied" state — colour only, no layout shift */
+  .nowplaying.copied{color:var(--brass)}
 </style>
 </head>
 <body>
@@ -262,8 +303,13 @@
     </div>
 
     <div class="field">
-      <div class="lab"><span class="name">Length</span></div>
-      <div class="seg" id="lenSeg"></div>
+      <div class="lab"><span class="name">Structure</span></div>
+      <div class="seg" id="structSeg"></div>
+    </div>
+
+    <div class="field">
+      <div class="lab"><span class="name">Voicing</span></div>
+      <div class="seg" id="voiceSeg"></div>
     </div>
 
     <div class="genrow">
@@ -284,8 +330,36 @@
     <div class="transport">
       <button class="btn btn-primary" id="playBtn" type="button" disabled><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 5v14l11-7z" fill="currentColor"/></svg><span>Play</span></button>
       <button class="btn btn-secondary" id="exportBtn" type="button" disabled><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v10m0 0l-4-4m4 4l4-4M5 19h14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Export .mid</span></button>
+      <button class="btn btn-ghost" id="shareBtn" type="button" disabled><svg width="15" height="15" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 12h8m0 0l-3-3m3 3l-3 3M4 6v12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Share</span></button>
     </div>
     <div class="nowplaying" id="nowplaying"></div>
+
+    <!-- Studio tools — real Pro surfaces, shown for everyone, locked until Pro -->
+    <div class="protools" id="protools" aria-label="Studio tools">
+      <p class="eyebrow">Studio tools</p>
+      <div class="tool-row">
+        <span class="tool-lab">Export feel</span>
+        <div class="seg" id="exportSeg"></div>
+      </div>
+      <div class="tool-row">
+        <button class="btn btn-secondary" id="batchBtn" type="button">Export pack of 10</button>
+        <button class="btn btn-ghost" id="saveBtn" type="button">Save to library</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- SAVED LIBRARY -->
+  <section class="panel" aria-label="Saved progressions" id="libPanel">
+    <div class="lib-head">
+      <h2>Library</h2>
+      <span class="lib-empty" id="libEmpty" hidden>No saved progressions yet.</span>
+    </div>
+    <ul class="lib-list" id="libList" hidden></ul>
+    <div class="lib-locked" id="libLocked" hidden>
+      <span class="lock">Pro</span>
+      <span>Name your progressions and reload them anytime.</span>
+      <button class="li-btn" id="libUnlock" type="button">Unlock</button>
+    </div>
   </section>
 
   <footer>
@@ -302,11 +376,14 @@
     <div class="pro-price"><span class="amount" id="proHead">$29</span><span class="once">one-time</span></div>
     <p class="pro-lede">Pay once. No subscription, no account. It runs in your browser.</p>
     <ul class="pro-list">
-      <li>8-chord progressions — the free forge stops at 4.</li>
-      <li>One payment, yours to keep. Nothing recurring.</li>
+      <li>Song structures: verse, chorus and bridge sections, each distinct, all in the same key.</li>
+      <li>Voicing control: close, open or spread, heard in playback and written into the MIDI.</li>
+      <li>Humanized export: subtle timing and velocity so the .mid plays like a take, not a grid.</li>
+      <li>Batch packs: ten variations exported at once as a .mid set.</li>
+      <li>Saved library: name your progressions and reload them anytime.</li>
       <li>Everything stays in your browser. Nothing you make is uploaded.</li>
     </ul>
-    <!-- STRIPE: set href to the $29 Payment Link after restart -->
+    <!-- GUMROAD: wire this button to the Gumroad ($29) checkout once the Merchant-of-Record listing is live. Stays disabled until then. -->
     <button class="btn btn-primary pro-cta" id="proBuyBtn" type="button" disabled>Coming soon</button>
     <p class="pro-fine">Checkout opens soon · unlocks in this browser</p>
   </div>
@@ -334,11 +411,13 @@
   if (params.get('pro') === '1'){ isPro = true; try { localStorage.setItem('chordforge_pro', '1'); } catch (e) {} }
 
   const proDialog = $('proDialog');
-  const openPro  = () => { proDialog.showModal ? proDialog.showModal() : proDialog.setAttribute('open',''); };
+  let proOpener = null;
+  const openPro  = () => { proOpener = document.activeElement; proDialog.showModal ? proDialog.showModal() : proDialog.setAttribute('open',''); };
   const closePro = () => { proDialog.close ? proDialog.close() : proDialog.removeAttribute('open'); };
   $('proBtn').addEventListener('click', openPro);
   $('proClose').addEventListener('click', closePro);
   proDialog.addEventListener('click', (e) => { if (e.target === proDialog) closePro(); });
+  proDialog.addEventListener('close', () => { if (proOpener && proOpener.focus) proOpener.focus(); });
   if (isPro){ $('proBtn').innerHTML = 'Pro · <span class="price num">unlocked</span>'; }
 
   let Tonal;
@@ -348,8 +427,8 @@
     showBanner('Could not load the music-theory library (Tonal). Check your connection and reload.');
     return;
   }
-  if (typeof Tone === 'undefined')       showBanner('Tone.js failed to load — playback is unavailable. The rest still works.');
-  if (typeof MidiWriter === 'undefined') showBanner('midi-writer-js failed to load — MIDI export is unavailable.');
+  if (typeof Tone === 'undefined')       showBanner('Tone.js failed to load. Playback is unavailable; the rest still works.');
+  if (typeof MidiWriter === 'undefined') showBanner('midi-writer-js failed to load. MIDI export is unavailable.');
 
   const { Scale, Note } = Tonal;
 
@@ -491,40 +570,96 @@
     return sc.notes;
   }
 
+  /* ---------- Pro feature tables ---------- */
+  // Song structures — each named section draws a DISTINCT template from the mood
+  // pool, so a full song is real verse/chorus/bridge writing, not A+B concatenation.
+  const STRUCTURES = {
+    loop: { label:'4-bar loop',            short:'loop',    plan:['Loop'],                     pro:false },
+    vc:   { label:'Verse · Chorus',        short:'V·C',     plan:['Verse','Chorus'],           pro:true  },
+    vcb:  { label:'V · C · Bridge',        short:'V·C·B',   plan:['Verse','Chorus','Bridge'],  pro:true  },
+  };
+  const VOICINGS = {
+    close:  { label:'Close',  pro:false },
+    open:   { label:'Open',   pro:true  },
+    spread: { label:'Spread', pro:true  },
+  };
+
   /* ---------- state ---------- */
-  const state = { root:'C', mode:'major', mood:'Dreamy', bpm:120, length:4, seed:12345, chords:[] };
-  let playing = false, part = null, chordSynth = null, leadSynth = null;
+  const state = { root:'C', mode:'major', mood:'Dreamy', bpm:120,
+    structure:'loop', voicing:'close', humanize:false,
+    seed:12345, chords:[], sections:[], chipEls:[] };
+  let playing = false, part = null, chordSynth = null, leadSynth = null, reverb = null;
 
   function subtitle(){
     return `${KEY_LABELS[state.root] || state.root} ${state.mode} · ${state.mood} · ${state.bpm} BPM`;
   }
 
-  function generate(regen){
-    if (regen) state.seed = (state.seed + Math.floor(Math.random() * 1e6) + 1) >>> 0;
-    const rand = rng(state.seed);
+  // pick a template index not already used, so sections stay musically distinct
+  function pickIdx(rand, len, used){
+    let i = Math.floor(rand() * len), guard = 0;
+    while (used.indexOf(i) !== -1 && used.length < len && guard++ < 40) i = (i + 1) % len;
+    return i;
+  }
+
+  // Pro voicings, applied to the canonical close voicing. Reflected in BOTH the
+  // Tone.js playback and the exported MIDI, because both read ch.midiChord.
+  function applyVoicing(base){
+    const v = isPro ? (state.voicing || 'close') : 'close';
+    const a = base.slice();
+    if (v === 'close' || a.length < 3) return a;
+    if (v === 'open'){                      // lift the inner voice an octave (open triad/7th)
+      a[1] += 12;
+      return a.sort((x, y) => x - y);
+    }
+    if (v === 'spread'){                    // drop the root, raise the top — wide two-hand spread
+      a[0] -= 12;
+      a[a.length - 1] += 12;
+      return a.sort((x, y) => x - y);
+    }
+    return a;
+  }
+
+  function makeChord(tok, scaleNotes, rand){
+    const t = parseToken(tok);
+    const pcs = buildPcs(scaleNotes, state.root, t);
+    const { symbol, roman } = analyze(pcs, t);
+    return { symbol, roman, base: voicePcs(pcs, 3), melody: melodyForChord(pcs, rand) };
+  }
+
+  // deterministic from (root, mode, mood, structure, voicing, seed) — a seed reproduces
+  // the exact progression, which is what makes the URL hash and saved library work.
+  function buildProgression(seed){
+    const rand = rng(seed);
     const scaleNotes = getScaleNotes(state.root, state.mode);
     const pool = MOODS[state.mood];
+    const structKey = (isPro && STRUCTURES[state.structure]) ? state.structure : 'loop';
+    const plan = STRUCTURES[structKey].plan;
 
-    const len = (state.length === 8 && isPro) ? 8 : 4;   // 8-bar output is Pro-gated
-    let tokens;
-    if (len === 4){
-      tokens = pool[Math.floor(rand() * pool.length)];
-    } else {
-      const a = Math.floor(rand() * pool.length);
-      let b = Math.floor(rand() * pool.length);
-      if (pool.length > 1 && b === a) b = (b + 1) % pool.length;
-      tokens = pool[a].concat(pool[b]);
-    }
-
-    state.chords = tokens.map(tok => {
-      const t = parseToken(tok);
-      const pcs = buildPcs(scaleNotes, state.root, t);
-      const { symbol, roman } = analyze(pcs, t);
-      return { symbol, roman, midiChord: voicePcs(pcs, 3), melody: melodyForChord(pcs, rand) };
+    const chords = [], sections = [], used = [];
+    plan.forEach((name) => {
+      const idx = pickIdx(rand, pool.length, used);
+      used.push(idx);
+      let tokens = pool[idx].slice();
+      if (name === 'Bridge'){                // rotate so the bridge starts on a different degree
+        const rot = 1 + Math.floor(rand() * (tokens.length - 1));
+        tokens = tokens.slice(rot).concat(tokens.slice(0, rot));
+      }
+      const start = chords.length;
+      tokens.forEach(tok => chords.push(makeChord(tok, scaleNotes, rand)));
+      sections.push({ name, start, len: tokens.length });
     });
+    chords.forEach(ch => { ch.midiChord = applyVoicing(ch.base); });
+    return { chords, sections };
+  }
 
+  function generate(regen){
+    if (regen) state.seed = (state.seed + Math.floor(Math.random() * 1e6) + 1) >>> 0;
+    const p = buildProgression(state.seed);
+    state.chords = p.chords;
+    state.sections = p.sections;
     if (playing) stop();
     renderProgression();
+    updateHash();
   }
 
   /* ---------- rendering ---------- */
@@ -544,29 +679,54 @@
     if (m) m.textContent = text || '';
   }
 
+  function chip(i){
+    const ch = state.chords[i];
+    const el = document.createElement('div');
+    el.className = 'chip';
+    el.dataset.i = i;
+    el.style.animationDelay = (i * 30) + 'ms';   // ease-out entrance, ~30ms stagger
+    el.innerHTML = `<div class="sym">${ch.symbol}</div><div class="rn">${ch.roman}</div>`;
+    state.chipEls[i] = el;
+    return el;
+  }
+
   function renderProgression(){
     $('outSub').textContent = subtitle();
     const wrap = $('chords');
     wrap.innerHTML = '';
-    const n = state.chords.length;
-    wrap.style.gridTemplateColumns = `repeat(${n <= 4 ? Math.max(n, 1) : 4},1fr)`;
-    state.chords.forEach((ch, i) => {
-      const el = document.createElement('div');
-      el.className = 'chip';
-      el.dataset.i = i;
-      el.style.animationDelay = (i * 30) + 'ms';   // ease-out entrance, ~30ms stagger
-      el.innerHTML = `<div class="sym">${ch.symbol}</div><div class="rn">${ch.roman}</div>`;
-      wrap.appendChild(el);
+    state.chipEls = [];
+    const multi = state.sections.length > 1;
+    state.sections.forEach(sec => {
+      let grid;
+      if (multi){
+        const block = document.createElement('div');
+        block.className = 'section';
+        const lab = document.createElement('div');
+        lab.className = 'section-label';
+        lab.textContent = sec.name;
+        block.appendChild(lab);
+        grid = document.createElement('div');
+        grid.className = 'chord-grid';
+        grid.style.gridTemplateColumns = `repeat(${Math.min(sec.len, 4)},1fr)`;
+        block.appendChild(grid);
+        wrap.appendChild(block);
+      } else {
+        grid = document.createElement('div');
+        grid.className = 'chord-grid';
+        grid.style.gridTemplateColumns = `repeat(${Math.max(sec.len, 1)},1fr)`;
+        wrap.appendChild(grid);
+      }
+      for (let k = 0; k < sec.len; k++) grid.appendChild(chip(sec.start + k));
     });
-    $('playBtn').disabled  = typeof Tone === 'undefined' || !state.chords.length;
+    $('playBtn').disabled   = typeof Tone === 'undefined' || !state.chords.length;
     $('exportBtn').disabled = typeof MidiWriter === 'undefined' || !state.chords.length;
+    $('shareBtn').disabled  = !state.chords.length;
     $('nowplaying').textContent = '';
     setMark('');
   }
 
   function highlight(idx){
-    const chips = $('chords').children;
-    for (let i = 0; i < chips.length; i++) chips[i].classList.toggle('active', i === idx);
+    (state.chipEls || []).forEach((el, i) => { if (el) el.classList.toggle('active', i === idx); });
     if (idx >= 0 && state.chords[idx]){
       $('nowplaying').innerHTML = `Now playing · <b>${state.chords[idx].symbol}</b>`;
       setMark(state.chords[idx].symbol);   // signature watermark follows the sounding chord
@@ -576,16 +736,21 @@
   /* ---------- playback (Tone.js) ---------- */
   function ensureSynths(){
     if (chordSynth) return;
+    // Warm patch — layered (fat) triangle oscillators through a soft low-pass into a
+    // shared algorithmic reverb. This is the sales demo; the Play button has to sound good.
+    reverb = new Tone.Freeverb({ roomSize: 0.72, dampening: 2600, wet: 0.18 }).toDestination();
+    const pad = new Tone.Filter({ type: 'lowpass', frequency: 2600, Q: 0.4 }).connect(reverb);
     chordSynth = new Tone.PolySynth(Tone.Synth, {
-      oscillator: { type: 'triangle' },
-      envelope: { attack: 0.03, decay: 0.25, sustain: 0.45, release: 1.1 },
-    }).toDestination();
-    chordSynth.volume.value = -10;
+      oscillator: { type: 'fattriangle', count: 3, spread: 26 },
+      envelope: { attack: 0.06, decay: 0.5, sustain: 0.5, release: 1.6 },
+    }).connect(pad);
+    chordSynth.volume.value = -13;
+    const leadFilt = new Tone.Filter({ type: 'lowpass', frequency: 3200, Q: 0.3 }).connect(reverb);
     leadSynth = new Tone.Synth({
       oscillator: { type: 'triangle' },
-      envelope: { attack: 0.02, decay: 0.12, sustain: 0.3, release: 0.5 },
-    }).toDestination();
-    leadSynth.volume.value = -13;
+      envelope: { attack: 0.015, decay: 0.14, sustain: 0.28, release: 0.6 },
+    }).connect(leadFilt);
+    leadSynth.volume.value = -15;
   }
 
   async function play(){
@@ -633,21 +798,140 @@
   }
 
   /* ---------- MIDI export (midi-writer-js) ---------- */
+  const TPB = 128, BAR = TPB * 4;   // midi-writer default: 128 ticks per quarter
+
+  function safeName(){
+    return `${state.root}_${state.mode}_${state.mood}_${state.structure}`.replace(/[^a-z0-9_]+/gi, '');
+  }
+
+  // Build a Writer for a chord set. Mechanical = the proven sequential path (free).
+  // Humanized (Pro) = absolute placement with seeded timing + velocity variation, so
+  // the .mid reads like a played take instead of a quantized grid.
+  function buildMidi(chords, humanize, seed){
+    const t1 = new MidiWriter.Track(); t1.setTempo(state.bpm); t1.addTrackName('Chords');
+    const t2 = new MidiWriter.Track(); t2.setTempo(state.bpm); t2.addTrackName('Melody');
+
+    if (!humanize){
+      chords.forEach(ch => t1.addEvent(new MidiWriter.NoteEvent({ pitch: ch.midiChord, duration: '1' })));
+      chords.forEach(ch => ch.melody.forEach(m =>
+        t2.addEvent(new MidiWriter.NoteEvent({ pitch: [m], duration: '4' }))));
+      return new MidiWriter.Writer([t1, t2]);
+    }
+
+    const hr = rng(((seed >>> 0) ^ 0x9e3779b9) >>> 0);
+    const jit = (amt) => Math.round((hr() * 2 - 1) * amt);
+    const vel = (lo, hi) => Math.round(lo + hr() * (hi - lo));
+    chords.forEach((ch, i) => {
+      const at = i * BAR;
+      t1.addEvent(new MidiWriter.NoteEvent({
+        pitch: ch.midiChord, duration: '1',
+        startTick: Math.max(0, at + jit(10)), velocity: vel(58, 86),
+      }));
+      ch.melody.forEach((m, b) => t2.addEvent(new MidiWriter.NoteEvent({
+        pitch: [m], duration: '4',
+        startTick: Math.max(0, at + b * TPB + jit(8)), velocity: vel(66, 92),
+      })));
+    });
+    return new MidiWriter.Writer([t1, t2]);
+  }
+
+  function dataUriToBytes(uri){
+    const b64 = uri.split(',')[1] || '';
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function downloadBlob(bytes, name, mime){
+    const url = URL.createObjectURL(new Blob([bytes], { type: mime }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 4000);
+  }
+
   function exportMidi(){
     if (typeof MidiWriter === 'undefined' || !state.chords.length) return;
-    const t1 = new MidiWriter.Track(); t1.setTempo(state.bpm); t1.addTrackName('Chords');
-    state.chords.forEach(ch => t1.addEvent(new MidiWriter.NoteEvent({ pitch: ch.midiChord, duration: '1' })));
+    const writer = buildMidi(state.chords, isPro && state.humanize, state.seed);
+    downloadBlob(dataUriToBytes(writer.dataUri()), `ChordForge_${safeName()}.mid`, 'audio/midi');
+  }
 
-    const t2 = new MidiWriter.Track(); t2.setTempo(state.bpm); t2.addTrackName('Melody');
-    state.chords.forEach(ch => ch.melody.forEach(m =>
-      t2.addEvent(new MidiWriter.NoteEvent({ pitch: [m], duration: '4' }))));
+  /* ---------- batch export (Pro): 10 seeded variations, one .zip ---------- */
+  function crc32(bytes){
+    let crc = 0xFFFFFFFF;
+    for (let i = 0; i < bytes.length; i++){
+      crc ^= bytes[i];
+      for (let j = 0; j < 8; j++) crc = (crc >>> 1) ^ (0xEDB88320 & -(crc & 1));
+    }
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  // minimal STORE-method zip (no compression) so batch packs need no extra library
+  function makeZip(files){
+    const enc = new TextEncoder();
+    const u16 = (n) => [n & 0xFF, (n >>> 8) & 0xFF];
+    const u32 = (n) => [n & 0xFF, (n >>> 8) & 0xFF, (n >>> 16) & 0xFF, (n >>> 24) & 0xFF];
+    const chunks = [], central = [];
+    let offset = 0;
+    files.forEach(f => {
+      const nameB = enc.encode(f.name);
+      const data = f.bytes instanceof Uint8Array ? f.bytes : Uint8Array.from(f.bytes);
+      const crc = crc32(data), size = data.length;
+      const local = [].concat(u32(0x04034b50), u16(20), u16(0), u16(0), u16(0), u16(0),
+        u32(crc), u32(size), u32(size), u16(nameB.length), u16(0));
+      const lh = new Uint8Array(local.length + nameB.length);
+      lh.set(local, 0); lh.set(nameB, local.length);
+      chunks.push(lh, data);
+      const cd = [].concat(u32(0x02014b50), u16(20), u16(20), u16(0), u16(0), u16(0), u16(0),
+        u32(crc), u32(size), u32(size), u16(nameB.length), u16(0), u16(0), u16(0), u16(0),
+        u32(0), u32(offset));
+      const ch = new Uint8Array(cd.length + nameB.length);
+      ch.set(cd, 0); ch.set(nameB, cd.length);
+      central.push(ch);
+      offset += lh.length + data.length;
+    });
+    const cdStart = offset;
+    let cdSize = 0; central.forEach(c => cdSize += c.length);
+    central.forEach(c => chunks.push(c));
+    chunks.push(new Uint8Array([].concat(u32(0x06054b50), u16(0), u16(0),
+      u16(files.length), u16(files.length), u32(cdSize), u32(cdStart), u16(0))));
+    let total = 0; chunks.forEach(c => total += c.length);
+    const out = new Uint8Array(total);
+    let p = 0; chunks.forEach(c => { out.set(c, p); p += c.length; });
+    return out;
+  }
+  function batchExport(){
+    if (typeof MidiWriter === 'undefined' || !state.chords.length) return;
+    const N = 10, nm = safeName(), files = [];
+    for (let n = 0; n < N; n++){
+      const s = (state.seed + n * 2654435761) >>> 0;         // deterministic variation seeds
+      const prog = buildProgression(s);
+      const writer = buildMidi(prog.chords, isPro && state.humanize, s);
+      files.push({ name: `ChordForge_${nm}_v${String(n + 1).padStart(2, '0')}.mid`,
+        bytes: dataUriToBytes(writer.dataUri()) });
+    }
+    downloadBlob(makeZip(files), `ChordForge_${nm}_pack.zip`, 'application/zip');
+  }
 
-    const writer = new MidiWriter.Writer([t1, t2]);
-    const a = document.createElement('a');
-    a.href = writer.dataUri();
-    const safe = `${state.root}_${state.mode}_${state.mood}`.replace(/[^a-z0-9_]+/gi, '');
-    a.download = `ChordForge_${safe}.mid`;
-    document.body.appendChild(a); a.click(); a.remove();
+  /* ---------- shareable state (URL hash) ---------- */
+  function decodeHash(){
+    const h = location.hash.replace(/^#/, '');
+    if (!h) return;
+    const p = new URLSearchParams(h);
+    if (p.get('k') && KEY_LABELS[p.get('k')]) state.root = p.get('k');
+    if (p.get('s') === 'minor' || p.get('s') === 'major') state.mode = p.get('s');
+    if (p.get('m') && MOODS[p.get('m')]) state.mood = p.get('m');
+    const seed = parseInt(p.get('seed'), 10); if (Number.isFinite(seed)) state.seed = seed >>> 0;
+    const b = parseInt(p.get('bpm'), 10); if (Number.isFinite(b)) state.bpm = Math.min(180, Math.max(60, b));
+    const st = p.get('st'); if (st && STRUCTURES[st] && (isPro || !STRUCTURES[st].pro)) state.structure = st;
+    const v = p.get('v'); if (v && VOICINGS[v] && (isPro || !VOICINGS[v].pro)) state.voicing = v;
+  }
+  function updateHash(){
+    const p = new URLSearchParams();
+    p.set('k', state.root); p.set('s', state.mode); p.set('m', state.mood);
+    p.set('seed', String(state.seed)); p.set('bpm', String(state.bpm));
+    if (state.structure !== 'loop') p.set('st', state.structure);
+    if (state.voicing !== 'close') p.set('v', state.voicing);
+    try { history.replaceState(null, '', '#' + p.toString()); } catch (e) {}
   }
 
   /* ---------- build controls ---------- */
@@ -657,6 +941,7 @@
     b.type = 'button';
     b.className = cls;
     b.innerHTML = inner;
+    b.dataset.val = val;
     b.setAttribute('aria-pressed', val === state.root ? 'true' : 'false');
     b.setAttribute('aria-label', aria);
     b.style.gridColumn = `${col} / span 2`;
@@ -670,50 +955,141 @@
     keySeg.appendChild(keyButton(val, `<span class="ks">${sharp}</span><span class="kf">${flat}</span>`,
       `${flat}, also ${sharp}`, 'acc', col, '1 / 2')));
 
-  const modeSeg = $('modeSeg');
-  [['major','Major'], ['minor','Minor']].forEach(([val, label]) => {
-    const b = segButton(label, val === state.mode);
-    b.addEventListener('click', () => { state.mode = val; setPressed(modeSeg, b); generate(false); });
-    modeSeg.appendChild(b);
-  });
-
-  const moodSeg = $('moodSeg');
-  MOOD_LIST.forEach(m => {
-    const b = segButton(m, m === state.mood);
-    b.addEventListener('click', () => { state.mood = m; setPressed(moodSeg, b); generate(false); });
-    moodSeg.appendChild(b);
-  });
-
-  const lenSeg = $('lenSeg');
-  [[4,'4 chords'], [8,'8 chords']].forEach(([val, label]) => {
-    const locked = val === 8 && !isPro;
-    const b = segButton(locked ? `${label}<span class="lock">Pro</span>` : label, val === state.length);
-    b.addEventListener('click', () => {
-      if (val === 8 && !isPro){ openPro(); return; }   // free tier stops at 4 bars
-      state.length = val; setPressed(lenSeg, b); generate(false);
+  // segmented builder with Pro gating: locked options dim + carry a brass lock and
+  // open the Pro dialog on click, so real usage collides with the upsell.
+  function buildSeg(container, items, current, onPick){
+    container.innerHTML = '';
+    items.forEach(it => {
+      const locked = it.pro && !isPro;
+      const b = segButton(locked ? `${it.label}<span class="lock">Pro</span>` : it.label, it.val === current);
+      b.dataset.val = it.val;
+      if (locked){ b.classList.add('locked'); b.setAttribute('data-pro-locked', ''); }
+      b.addEventListener('click', () => {
+        if (it.pro && !isPro){ openPro(); return; }
+        setPressed(container, b); onPick(it.val, b);
+      });
+      container.appendChild(b);
     });
-    lenSeg.appendChild(b);
-  });
+  }
+  function pressByVal(c, val){
+    [...c.children].forEach(x => x.setAttribute('aria-pressed', x.dataset.val === String(val) ? 'true' : 'false'));
+  }
+
+  buildSeg($('modeSeg'), [{ val:'major', label:'Major' }, { val:'minor', label:'Minor' }],
+    state.mode, (v) => { state.mode = v; generate(false); });
+  buildSeg($('moodSeg'), MOOD_LIST.map(m => ({ val:m, label:m })),
+    state.mood, (v) => { state.mood = v; generate(false); });
+  buildSeg($('structSeg'), Object.keys(STRUCTURES).map(k => ({ val:k, label:STRUCTURES[k].label, pro:STRUCTURES[k].pro })),
+    state.structure, (v) => { state.structure = v; generate(false); });
+  buildSeg($('voiceSeg'), Object.keys(VOICINGS).map(k => ({ val:k, label:VOICINGS[k].label, pro:VOICINGS[k].pro })),
+    state.voicing, (v) => { state.voicing = v; generate(false); });   // re-voice by regenerating at the same seed
+  buildSeg($('exportSeg'), [{ val:'mech', label:'Mechanical' }, { val:'human', label:'Humanized', pro:true }],
+    state.humanize ? 'human' : 'mech', (v) => { state.humanize = (v === 'human'); });
 
   const bpm = $('bpm');
-  const updateBpmFill = () => {
-    bpm.style.setProperty('--fill', ((state.bpm - 60) / 120 * 100) + '%');
-  };
+  const updateBpmFill = () => { bpm.style.setProperty('--fill', ((state.bpm - 60) / 120 * 100) + '%'); };
   bpm.addEventListener('input', () => {
     state.bpm = +bpm.value;
     $('bpmVal').textContent = `${state.bpm} BPM`;
     updateBpmFill();
     if (playing && typeof Tone !== 'undefined') Tone.Transport.bpm.value = state.bpm;
-    if (state.chords.length) $('outSub').textContent = subtitle();
+    if (state.chords.length){ $('outSub').textContent = subtitle(); updateHash(); }
   });
-  updateBpmFill();
 
+  // reflect state back onto the controls after a library load or a hash restore
+  function syncControls(){
+    pressByVal($('keySeg'), state.root);
+    pressByVal($('modeSeg'), state.mode);
+    pressByVal($('moodSeg'), state.mood);
+    pressByVal($('structSeg'), state.structure);
+    pressByVal($('voiceSeg'), state.voicing);
+    pressByVal($('exportSeg'), state.humanize ? 'human' : 'mech');
+    bpm.value = state.bpm;
+    $('bpmVal').textContent = `${state.bpm} BPM`;
+    updateBpmFill();
+  }
+
+  /* ---------- saved library (Pro, localStorage) ---------- */
+  const LIB_KEY = 'chordforge_library';
+  const readLib  = () => { try { return JSON.parse(localStorage.getItem(LIB_KEY) || '[]'); } catch (e) { return []; } };
+  const writeLib = (a) => { try { localStorage.setItem(LIB_KEY, JSON.stringify(a)); } catch (e) {} };
+
+  function saveCurrent(){
+    if (!isPro){ openPro(); return; }
+    if (!state.chords.length) return;
+    const def = `${KEY_LABELS[state.root] || state.root} ${state.mood}`;
+    const name = ((window.prompt('Name this progression', def) || '').trim()) || def;
+    const lib = readLib();
+    lib.unshift({ id: Date.now().toString(36), name,
+      root: state.root, mode: state.mode, mood: state.mood,
+      structure: state.structure, voicing: state.voicing, bpm: state.bpm, seed: state.seed });
+    writeLib(lib.slice(0, 60));
+    renderLib();
+  }
+  function loadItem(it){
+    state.root = it.root; state.mode = it.mode; state.mood = it.mood;
+    state.structure = STRUCTURES[it.structure] ? it.structure : 'loop';
+    state.voicing = VOICINGS[it.voicing] ? it.voicing : 'close';
+    state.bpm = Math.min(180, Math.max(60, it.bpm || 120));
+    state.seed = (it.seed >>> 0);
+    syncControls();
+    generate(false);              // deterministic rebuild from the saved seed + params
+  }
+  function delItem(id){ writeLib(readLib().filter(x => x.id !== id)); renderLib(); }
+
+  function renderLib(){
+    const list = $('libList'), empty = $('libEmpty'), locked = $('libLocked');
+    if (!isPro){ locked.hidden = false; list.hidden = true; empty.hidden = true; return; }
+    locked.hidden = true; list.hidden = false;
+    const lib = readLib();
+    empty.hidden = lib.length > 0;
+    list.innerHTML = '';
+    lib.forEach(it => {
+      const li = document.createElement('li'); li.className = 'lib-item';
+      const main = document.createElement('div'); main.className = 'li-main';
+      const nm = document.createElement('div'); nm.className = 'li-name'; nm.textContent = it.name;
+      const meta = document.createElement('div'); meta.className = 'li-meta';
+      const st = STRUCTURES[it.structure] ? STRUCTURES[it.structure].short : 'loop';
+      meta.textContent = `${KEY_LABELS[it.root] || it.root} ${it.mode} · ${it.mood} · ${st}`;
+      main.appendChild(nm); main.appendChild(meta);
+      const load = document.createElement('button'); load.className = 'li-btn load'; load.type = 'button'; load.textContent = 'Load';
+      load.addEventListener('click', () => loadItem(it));
+      const del = document.createElement('button'); del.className = 'li-btn'; del.type = 'button'; del.textContent = 'Delete';
+      del.addEventListener('click', () => delItem(it.id));
+      li.appendChild(main); li.appendChild(load); li.appendChild(del);
+      list.appendChild(li);
+    });
+  }
+
+  /* ---------- share link ---------- */
+  function flashShare(msg){
+    const np = $('nowplaying');
+    np.textContent = msg; np.classList.add('copied');
+    setTimeout(() => { np.classList.remove('copied'); if (!playing) np.textContent = ''; }, 1800);
+  }
+
+  /* ---------- wiring ---------- */
   $('genBtn').addEventListener('click', () => generate(false));
   $('regenBtn').addEventListener('click', () => generate(true));
   $('playBtn').addEventListener('click', () => { playing ? stop() : play(); });
   $('exportBtn').addEventListener('click', exportMidi);
+  $('shareBtn').addEventListener('click', async () => {
+    updateHash();
+    try { await navigator.clipboard.writeText(location.href); flashShare('Link copied'); }
+    catch (e) { flashShare('Copy the URL to share'); }
+  });
+  $('batchBtn').addEventListener('click', () => { if (!isPro){ openPro(); return; } batchExport(); });
+  $('saveBtn').addEventListener('click', saveCurrent);
+  $('libUnlock').addEventListener('click', openPro);
+  if (!isPro){
+    $('batchBtn').classList.add('locked'); $('batchBtn').innerHTML = 'Export pack of 10 <span class="lock">Pro</span>';
+    $('saveBtn').classList.add('locked');  $('saveBtn').innerHTML  = 'Save to library <span class="lock">Pro</span>';
+  }
 
-  // engine ready
+  // engine ready — restore any shared state, sync the controls, render the library
+  decodeHash();
+  syncControls();
+  renderLib();
   $('genBtn').disabled = false;
   $('genBtn').textContent = 'Generate';
   $('regenBtn').disabled = false;
