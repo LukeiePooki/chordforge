@@ -6,11 +6,131 @@
 <title>ChordForge — Free Chord Progression Generator with MIDI Export</title>
 <meta name="description" content="Free chord progression generator with one-click MIDI export. Pick a key and a mood, get an in-key progression plus a guide melody, and drop the .mid straight into your DAW. No signup.">
 <link rel="canonical" href="https://lukeiepooki.github.io/chordforge/">
+<meta name="theme-color" content="#0A0A0C">
+<meta property="og:site_name" content="ChordForge">
+<meta property="og:locale" content="en_US">
 <meta property="og:title" content="ChordForge — Free Chord Progression Generator with MIDI Export">
-<meta property="og:description" content="Pick a key and a vibe, get an in-key chord progression and guide melody, then export the MIDI into your DAW. Free, no signup.">
+<meta property="og:description" content="Pick a key and a mood, get an in-key chord progression and a guide melody, then export the .mid into your DAW. Free, no signup.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://lukeiepooki.github.io/chordforge/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://lukeiepooki.github.io/chordforge/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="ChordForge — four chord chips reading Am7, Dm7, G and C with their roman numerals, above the line: free, no signup, exports .mid">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="ChordForge — Free Chord Progression Generator with MIDI Export">
+<meta name="twitter:description" content="Pick a key and a mood, get an in-key chord progression and a guide melody, then export the .mid into your DAW. Free, no signup.">
+<meta name="twitter:image" content="https://lukeiepooki.github.io/chordforge/og.png">
+
+<!-- favicon: the key-selector motif, two naturals and one lit tonic -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2032%2032'%3E%3Crect%20width='32'%20height='32'%20rx='7'%20fill='%230A0A0C'/%3E%3Crect%20x='6'%20y='7'%20width='6'%20height='18'%20rx='1.5'%20fill='%23F5F6F8'/%3E%3Crect%20x='13'%20y='7'%20width='6'%20height='18'%20rx='1.5'%20fill='%2322C7F5'/%3E%3Crect%20x='20'%20y='7'%20width='6'%20height='18'%20rx='1.5'%20fill='%23F5F6F8'/%3E%3C/svg%3E">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "ChordForge",
+  "url": "https://lukeiepooki.github.io/chordforge/",
+  "description": "A free chord progression generator that exports MIDI. Pick a key, a scale and a mood, and ChordForge builds an in-key chord progression with a guide melody, plays it back in the browser, and exports a multi-track .mid file for any DAW. No account, nothing uploaded.",
+  "applicationCategory": "MusicApplication",
+  "applicationSubCategory": "Chord progression generator",
+  "operatingSystem": "Any modern web browser: Chrome, Safari, Firefox, Edge",
+  "browserRequirements": "Requires JavaScript and the Web Audio API",
+  "image": "https://lukeiepooki.github.io/chordforge/og.png",
+  "inLanguage": "en",
+  "isAccessibleForFree": true,
+  "featureList": [
+    "Chord progressions in all 12 keys, major or minor",
+    "Seven moods: Dreamy, Dark, Epic, Lo-fi, Sad, Uplifting, Jazzy",
+    "Roman numeral analysis printed under every chord",
+    "Browser playback with a four-note guide melody",
+    "Tempo from 60 to 180 BPM",
+    "One-click export to a multi-track MIDI file",
+    "Shareable links that reproduce the exact progression"
+  ],
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "availability": "https://schema.org/InStock",
+    "description": "Free tier: unlimited generation, browser playback, MIDI export and share links. No account required."
+  },
+  "publisher": { "@type": "Organization", "name": "Money Talks" }
+}
+</script>
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Is ChordForge free?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Generating, playing back, exporting MIDI and sharing links are free and unlimited, with no ads and no signup. Pro is a one-time $29 unlock for the extra features listed further down; checkout is not open yet, so nothing on this page is for sale today."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Do I need an account?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. There is no signup and no login. Everything runs in your browser and nothing you generate is uploaded. Saved progressions and the Pro unlock live in your browser's local storage, so they stay on the device you used."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What is a MIDI file?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "A MIDI file holds notes rather than sound: which pitch, when it starts, how long it lasts and how hard it was hit. Your DAW plays those notes through whichever instrument you point them at, so the same .mid can be a piano, a pad or a bass. It also stays fully editable, so you can move or delete any chord after importing it."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How do I import a MIDI file into my DAW?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "In almost every DAW you drag the .mid out of your downloads folder and drop it into the arrangement or playlist. The DAW notes above cover the exact behavior in Ableton Live, FL Studio, Logic Pro, Reaper, Bitwig Studio and GarageBand."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I use these chord progressions in music I sell?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. A chord progression on its own is not copyrightable: copyright protects a specific recorded or written work, not the underlying sequence of chords, which is why the same four chords turn up in hundreds of released songs. Whatever you write on top of one is yours. No attribution, no royalties, no license to buy."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Does ChordForge work on a phone?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. The layout is built for a phone screen first, and playback works in mobile browsers once you tap Play, because browsers require a tap before any audio can start. Exported files go wherever your phone saves downloads, which on iOS is the Files app."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What do I get with ChordForge Pro?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Five things the free tier does not have: verse, chorus and bridge structures where each section gets its own distinct progression in the same key; open and spread voicings, heard in playback and written into the MIDI; a humanized export with small timing and velocity variation; a batch export of ten variations in one download; and a saved library you can name and reload. Pro is $29 once, not a subscription. Checkout is not live yet, so the button reads Coming soon."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Are the chords always in the key I picked?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Yes. Each mood template is stored as scale degrees, and the chords are built from the scale you selected, so every chord quality follows the key instead of being hard-coded. The one deliberate exception is the borrowed major chords in the Dark and Lo-fi moods, which is what gives those two their color in a major key."
+      }
+    }
+  ]
+}
+</script>
 <style>
   :root{
     /* ---------- neutral dark ramp ----------
@@ -65,7 +185,7 @@
   /* ---------- header ---------- */
   header.top{display:flex; align-items:flex-start; gap:16px; padding-bottom:20px; border-bottom:1px solid var(--edge)}
   .brand{margin-right:auto; min-width:0}
-  .wordmark{font-family:var(--serif); font-size:var(--t-xl); line-height:1.05; letter-spacing:.005em; font-weight:800; color:var(--ink)}
+  .wordmark{margin:0; font-family:var(--serif); font-size:var(--t-xl); line-height:1.05; letter-spacing:.005em; font-weight:800; color:var(--ink)}
   .wordmark .br{color:var(--accent)}
   .tagline{margin:8px 0 0; color:var(--ink-soft); font-size:var(--t-xs); line-height:1.5; max-width:52ch; font-weight:400}
   .tagline b{color:var(--ink); font-weight:700; font-family:var(--mono); font-size:.92em}
@@ -283,13 +403,81 @@
 
   /* share "copied" state — colour only, no layout shift */
   .nowplaying.copied{color:var(--accent)}
+
+  /* ---------- reference block: the reading column under the instrument ----------
+     Deliberately narrower than the panels above it (editorial measure, ~64ch) and
+     left-aligned inside the 700px wrap. The progression cards are the single
+     grid-break: they run the full wrap width while the prose stays short. */
+  /* the measure is a rem length, not ch: ch resolves against each element's own
+     font-size, which left the h2 hairlines wider than the rules under them. */
+  .reading{margin-top:56px; --measure:32rem}
+  .reading h2, .reading p, .steps, .daws, .faq{max-width:var(--measure)}
+  .reading h2{margin:48px 0 14px; padding-top:24px; border-top:1px solid var(--edge);
+    font-family:var(--serif); font-size:var(--t-lg); font-weight:800; line-height:1.18;
+    letter-spacing:.005em; color:var(--ink)}
+  .reading > h2:first-child{margin-top:0; padding-top:0; border-top:0}
+  .reading p{margin:0 0 14px; font-size:var(--t-sm); line-height:1.65; color:var(--ink-soft)}
+  .reading p:last-child{margin-bottom:0}
+  /* blocks that follow a list or a card grid need their own air */
+  .steps + p, .progs + p, .daws + p{margin-top:24px}
+  .reading .lede{font-size:var(--t-md); line-height:1.5; color:var(--ink); margin-bottom:16px}
+  .reading b{color:var(--ink); font-weight:700}
+  .reading .kbd{font-family:var(--mono); font-size:.92em; color:var(--ink); font-weight:600}
+  .reading .note{font-family:var(--mono); font-size:var(--t-xs); color:var(--ink-dim); line-height:1.6}
+  .reading a{color:var(--ink); text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:3px; text-decoration-color:var(--edge-strong);
+    transition:color .14s ease, text-decoration-color .14s ease}
+  .reading a:hover{color:var(--accent); text-decoration-color:var(--accent)}
+
+  /* steps — mono index, serif instruction */
+  .steps{list-style:none; margin:0; padding:0; counter-reset:step}
+  .steps li{position:relative; padding-left:36px; margin-bottom:14px;
+    font-size:var(--t-sm); line-height:1.6; color:var(--ink-soft)}
+  .steps li:last-child{margin-bottom:0}
+  .steps li::before{counter-increment:step; content:counter(step,decimal-leading-zero);
+    position:absolute; left:0; top:.2em; font-family:var(--mono); font-size:var(--t-xs);
+    font-weight:600; color:var(--ink-dim); font-variant-numeric:tabular-nums; letter-spacing:.02em}
+
+  /* DAW notes — a spec table, hairline rows, no cards */
+  .daws{margin:0; padding:0}
+  .daws .row{padding:14px 0; border-top:1px solid var(--edge)}
+  .daws .row:first-child{border-top:0; padding-top:0}
+  .daws dt{font-family:var(--serif); font-weight:700; font-size:var(--t-sm); color:var(--ink); line-height:1.4}
+  .daws dd{margin:4px 0 0; font-size:var(--t-sm); line-height:1.6; color:var(--ink-soft)}
+  @media(min-width:600px){
+    .daws .row{display:grid; grid-template-columns:150px 1fr; gap:20px; align-items:baseline}
+    .daws dd{margin:0}
+  }
+
+  /* progressions — the grid-break */
+  .progs{display:grid; gap:12px; margin:4px 0 0;
+    grid-template-columns:repeat(auto-fit,minmax(248px,1fr))}
+  .prog{background:var(--elevated); border:1px solid var(--edge); border-radius:var(--r-sm);
+    padding:18px 18px 16px}
+  .prog h3{margin:0; font-family:var(--mono); font-size:var(--t-xs); font-weight:500;
+    letter-spacing:.16em; text-transform:uppercase; color:var(--ink-dim)}
+  .prog .rn{margin:10px 0 0; font-family:var(--mono); font-size:var(--t-md); font-weight:600;
+    color:var(--ink); line-height:1.3; letter-spacing:.01em}
+  .prog .ex{margin:7px 0 0; font-family:var(--mono); font-size:var(--t-xs);
+    color:var(--ink-dim); line-height:1.5; font-variant-numeric:tabular-nums}
+  .prog .why{margin:13px 0 0; font-size:var(--t-sm); line-height:1.6; color:var(--ink-soft)}
+
+  /* FAQ — airy hairline stack, deliberately not the DAW treatment */
+  .faq{margin:0; padding:0}
+  .faq .qa{padding:20px 0; border-top:1px solid var(--edge)}
+  .faq .qa:first-child{border-top:0; padding-top:0}
+  .faq dt{font-family:var(--serif); font-weight:700; font-size:var(--t-md);
+    line-height:1.35; color:var(--ink)}
+  .faq dd{margin:9px 0 0; font-size:var(--t-sm); line-height:1.65; color:var(--ink-soft)}
+
+  .back{margin-top:32px}
 </style>
 </head>
 <body>
 <div class="wrap">
   <header class="top">
     <div class="brand">
-      <div class="wordmark">Chord<span class="br">F</span>orge</div>
+      <h1 class="wordmark">Chord<span class="br">F</span>orge</h1>
       <p class="tagline">In-key chord progressions, a guide melody, and a <b>.mid</b> for your DAW.</p>
     </div>
     <button class="pro" id="proBtn" type="button" title="See what ChordForge Pro unlocks">Unlock Pro <span class="price num">$29</span></button>
@@ -298,7 +486,7 @@
   <div class="banner hide" id="banner"></div>
 
   <!-- CONTROLS -->
-  <section class="panel" aria-label="Progression settings">
+  <section class="panel" id="forge" aria-label="Progression settings">
     <p class="eyebrow">Forge a progression</p>
 
     <div class="field">
@@ -380,6 +568,209 @@
       <span>Name your progressions and reload them anytime.</span>
       <button class="li-btn" id="libUnlock" type="button">Unlock</button>
     </div>
+  </section>
+
+  <!-- REFERENCE -->
+  <section class="reading" aria-labelledby="about-h">
+
+    <h2 id="about-h">What ChordForge is</h2>
+    <p class="lede">ChordForge is a free chord progression generator that writes the MIDI for you.</p>
+    <p>You pick a key, a scale and a mood. It builds a progression that stays in that key, adds a
+      four-note guide melody over every chord, and exports both as a standard multi-track
+      <span class="kbd">.mid</span> file you can drag into any DAW. It runs entirely in your browser:
+      no account, no upload, nothing kept on a server.</p>
+    <p>It is built for the moment before a track exists. Instead of staring at an empty arrangement
+      you get four bars of harmony to react to, with the roman numeral printed under each chord so
+      you can see why the loop works and repeat the trick without the tool.</p>
+
+    <h2>How to use it</h2>
+    <ol class="steps">
+      <li>Pick a key on the keyboard strip, then <b>Major</b> or <b>Minor</b>. Every chord after
+        this is built from that scale.</li>
+      <li>Choose a <b>mood</b>. Dreamy, Dark, Epic, Lo-fi, Sad, Uplifting and Jazzy each draw from
+        their own set of chord shapes.</li>
+      <li>Set the <b>tempo</b>. The slider runs 60 to 180 BPM and the value is written into the
+        exported file.</li>
+      <li>Press <b>Generate</b>. Four chords appear with their symbols and roman numerals.
+        <b>Regenerate</b> gives you a different progression at the same settings.</li>
+      <li>Press <b>Play</b> to hear it loop. The chord that is currently sounding lights up, so you
+        can hear which one you want to keep.</li>
+      <li>Press <b>Export .mid</b>. You get one file with two tracks: the chords, and the guide
+        melody over the top.</li>
+      <li>Drag that file into your DAW and point it at any instrument. Nothing else to install.</li>
+    </ol>
+    <p><b>Share</b> copies a link that rebuilds the exact progression you are looking at, which is
+      the fastest way to send an idea to whoever you are writing with.</p>
+
+    <h2>Works with your DAW</h2>
+    <p>The export is a plain multi-track MIDI file, so anything that reads MIDI will open it. What
+      each DAW does when you drop it in:</p>
+    <dl class="daws">
+      <div class="row">
+        <dt>Ableton Live</dt>
+        <dd>Drag the file into Session or Arrangement view. Live creates one MIDI track per track in
+          the file, so the chords and the melody land separately and can go to different instruments.</dd>
+      </div>
+      <div class="row">
+        <dt>FL Studio</dt>
+        <dd>Drag it into the Playlist, or use File &rarr; Import &rarr; MIDI file. FL asks how you want the
+          tracks laid out, then puts each one on its own channel.</dd>
+      </div>
+      <div class="row">
+        <dt>Logic Pro</dt>
+        <dd>Drop it on an empty part of the Tracks area. Logic makes a software instrument track per
+          MIDI track and offers to take the tempo from the file.</dd>
+      </div>
+      <div class="row">
+        <dt>Reaper</dt>
+        <dd>Drag it into the track panel. Reaper asks whether to expand the file into separate tracks
+          or keep it as one item; separate keeps the melody editable on its own.</dd>
+      </div>
+      <div class="row">
+        <dt>Bitwig Studio</dt>
+        <dd>Drag it onto the arranger for a clip per track, or drop it straight onto an existing
+          instrument track to hear it through that device immediately.</dd>
+      </div>
+      <div class="row">
+        <dt>GarageBand</dt>
+        <dd>On the Mac, drag the file into the timeline and it becomes software instrument regions.
+          GarageBand for iPhone and iPad cannot import MIDI files, so use the Mac version or another
+          iOS app that accepts them.</dd>
+      </div>
+    </dl>
+
+    <h2>Chord progressions by mood</h2>
+    <p>Each mood is a small pool of templates written in scale degrees, so the same shape gives you
+      different chords in every key. Here is one template from each mood, with the chords it produces
+      in a common key. The numerals are exactly what the tool prints under the chips.</p>
+    <div class="progs">
+
+      <article class="prog">
+        <h3>Dreamy</h3>
+        <p class="rn">I&ndash;iii&ndash;IV&ndash;vi</p>
+        <p class="ex">C major: C &middot; Em &middot; F &middot; Am</p>
+        <p class="why">It never touches the dominant, so nothing pulls hard toward home. The loop
+          drifts between the tonic and its relative minor, which is why it sits under a pad without
+          ever demanding a resolution.</p>
+      </article>
+
+      <article class="prog">
+        <h3>Sad</h3>
+        <p class="rn">i&ndash;VI&ndash;III&ndash;VII</p>
+        <p class="ex">A minor: Am &middot; F &middot; C &middot; G</p>
+        <p class="why">Three major chords orbiting one minor chord. The minor tonic sets the mood,
+          but everything around it is bright, and that mix is what reads as wistful rather than
+          grim.</p>
+      </article>
+
+      <article class="prog">
+        <h3>Dark</h3>
+        <p class="rn">i&ndash;&#9837;VI&ndash;&#9837;VII&ndash;i</p>
+        <p class="ex">A minor: Am &middot; F &middot; G &middot; Am</p>
+        <p class="why">The same family as the sad loop with the third chord cut and the tonic
+          returning early. Landing back on the minor chord every four bars is what keeps the weight
+          on the floor.</p>
+      </article>
+
+      <article class="prog">
+        <h3>Lo-fi</h3>
+        <p class="rn">i7&ndash;iv7&ndash;&#9837;VII&ndash;III</p>
+        <p class="ex">A minor: Am7 &middot; Dm7 &middot; G &middot; C</p>
+        <p class="why">Sevenths soften both minor chords into jazz territory. The last two are a
+          straight V&ndash;I into the relative major, so the loop brightens for a bar before it drops
+          back to the top.</p>
+      </article>
+
+      <article class="prog">
+        <h3>Uplifting</h3>
+        <p class="rn">I&ndash;V&ndash;vi&ndash;IV</p>
+        <p class="ex">C major: C &middot; G &middot; Am &middot; F</p>
+        <p class="why">The four chords behind the famous medley. It leaves home on the dominant,
+          dips into the relative minor, then walks back through the subdominant. Epic is the same
+          four rotated to start on vi, which delays the tonic and makes the arrival bigger.</p>
+      </article>
+
+      <article class="prog">
+        <h3>Jazzy</h3>
+        <p class="rn">ii7&ndash;V7&ndash;Imaj7&ndash;Imaj7</p>
+        <p class="ex">C major: Dm7 &middot; G7 &middot; Cmaj7 &middot; Cmaj7</p>
+        <p class="why">The ii&ndash;V&ndash;I, the sentence most jazz standards are built from. The
+          tritone inside G7, between B and F, is the tension; it resolves into Cmaj7, which then
+          holds for a second bar.</p>
+      </article>
+
+    </div>
+    <p class="note">Flat numerals mark chords borrowed from the parallel minor. In a minor key they
+      are already diatonic; in a major key they are the color.</p>
+
+    <h2>Questions</h2>
+    <dl class="faq">
+
+      <div class="qa">
+        <dt>Is ChordForge free?</dt>
+        <dd>Yes. Generating, playing back, exporting MIDI and sharing links are free and unlimited,
+          with no ads and no signup. Pro is a one-time $29 unlock for the extra features listed
+          further down; checkout is not open yet, so nothing on this page is for sale today.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>Do I need an account?</dt>
+        <dd>No. There is no signup and no login. Everything runs in your browser and nothing you
+          generate is uploaded. Saved progressions and the Pro unlock live in your browser's local
+          storage, so they stay on the device you used.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>What is a MIDI file?</dt>
+        <dd>A MIDI file holds notes rather than sound: which pitch, when it starts, how long it lasts
+          and how hard it was hit. Your DAW plays those notes through whichever instrument you point
+          them at, so the same <span class="kbd">.mid</span> can be a piano, a pad or a bass. It also
+          stays fully editable, so you can move or delete any chord after importing it.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>How do I import a MIDI file into my DAW?</dt>
+        <dd>In almost every DAW you drag the <span class="kbd">.mid</span> out of your downloads
+          folder and drop it into the arrangement or playlist. The DAW notes above cover the exact
+          behavior in Ableton Live, FL Studio, Logic Pro, Reaper, Bitwig Studio and GarageBand.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>Can I use these chord progressions in music I sell?</dt>
+        <dd>Yes. A chord progression on its own is not copyrightable: copyright protects a specific
+          recorded or written work, not the underlying sequence of chords, which is why the same four
+          chords turn up in hundreds of released songs. Whatever you write on top of one is yours. No
+          attribution, no royalties, no license to buy.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>Does ChordForge work on a phone?</dt>
+        <dd>Yes. The layout is built for a phone screen first, and playback works in mobile browsers
+          once you tap Play, because browsers require a tap before any audio can start. Exported files
+          go wherever your phone saves downloads, which on iOS is the Files app.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>What do I get with ChordForge Pro?</dt>
+        <dd>Five things the free tier does not have: verse, chorus and bridge structures where each
+          section gets its own distinct progression in the same key; open and spread voicings, heard
+          in playback and written into the MIDI; a humanized export with small timing and velocity
+          variation; a batch export of ten variations in one download; and a saved library you can
+          name and reload. Pro is $29 once, not a subscription. Checkout is not live yet, so the
+          button reads Coming soon.</dd>
+      </div>
+
+      <div class="qa">
+        <dt>Are the chords always in the key I picked?</dt>
+        <dd>Yes. Each mood template is stored as scale degrees, and the chords are built from the
+          scale you selected, so every chord quality follows the key instead of being hard-coded. The
+          one deliberate exception is the borrowed major chords in the Dark and Lo-fi moods, which is
+          what gives those two their color in a major key.</dd>
+      </div>
+
+    </dl>
+
+    <p class="back"><a href="#forge">Back to the generator</a></p>
   </section>
 
   <footer>
